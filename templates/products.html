@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+
+    <!-- font awesome cdn link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- Tailwind CSS CDN link -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="font-sans bg-pink-50">
+
+    <!-- Products section starts  -->
+    <section class="products py-12" id="products">
+        <h1 class="text-center text-4xl text-gray-800 py-4 px-6 my-8 bg-pink-100">
+            <span class="text-pink-600">Latest</span> Products
+        </h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+            <div class="box bg-white rounded-lg shadow-md overflow-hidden">
+                <span class="discount absolute top-0 left-0 bg-pink-500 text-white text-lg px-3 py-2">-10%</span>
+                <div class="image">
+                    <img src="https://via.placeholder.com/300" alt="">
+                    <div class="icons flex justify-center items-center absolute inset-0 opacity-0 transition duration-300">
+                        <a href="#" class="fas fa-heart text-pink-500 text-lg"></a>
+                        <a href="#" class="cart-btn bg-pink-500 text-white text-lg">Add to Cart</a>
+                        <a href="#" class="fas fa-share text-pink-500 text-lg"></a>
+                    </div>
+                </div>
+                <div class="content p-4">
+                    <h3 class="text-xl font-semibold">Scarlett Shampoo</h3>
+                    <div class="price mt-2 text-pink-500 font-bold">Rp68.999 <span class="text-gray-500 line-through">Rp75.000</span></div>
+                </div>
+            </div>
+            <!-- Add more boxes here with similar structure -->
+        </div>
+
+        <div class="content mt-8 text-center">
+            <a href="#" class="btn bg-pink-500 text-white py-3 px-6 rounded-lg text-lg">See Reviews Here</a>
+        </div>
+
+    </section>
+    <!-- Products section ends -->
+
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "kilashop",
+  "version": "1.0.0",
+  "description": "akwila keren banget",
+  "main": "app.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind": "npx tailwindcss -i ./static/css/global.css -o ./static/dist/css/out.css --watch",
+    "start": "python app.py"
+  },
+  "keywords": [
+    "akwila"
+  ],
+  "author": "Akwila",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.4"
+  }
+}
