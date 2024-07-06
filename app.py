@@ -31,6 +31,10 @@ def products():
 def cart():
     return render_template('cart.html')
 
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
 # Route for adding a product
 @app.route('/admin/add_product', methods=['GET', 'POST'])
 def add_product():
