@@ -9,8 +9,9 @@ app.secret_key = 'your_secret_key'  # Replace with your secret key
 
 # MongoDB connection
 client = MongoClient('mongodb://localhost:27017/')
-db = client['your_database']
-collection = db['products']
+db = client['kilashop']
+collection = db['product']
+
 
 # Define the Product Form using WTForms
 class ProductForm(FlaskForm):
@@ -19,21 +20,26 @@ class ProductForm(FlaskForm):
     image = StringField('Image Path', validators=[DataRequired()])
     submit = SubmitField('Add Product')
 
+
 @app.route('/')
 def home():
     return render_template('index.html')
+
 
 @app.route('/products')
 def products():
     return render_template('products.html')
 
+
 @app.route('/cart')
 def cart():
     return render_template('cart.html')
 
+
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
+
 
 # Route for adding a product
 @app.route('/admin/add_product', methods=['GET', 'POST'])
@@ -55,9 +61,11 @@ def add_product():
         return redirect(url_for('index'))
     return render_template('add_product.html', form=form)
 
+
 @app.route('/reviews')
 def reviews():
     return render_template('reviews.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

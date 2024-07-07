@@ -1,60 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'ui/base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KilaShop Website</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link
-      rel="stylesheet"
-      href="{{url_for('static',filename='dist/css/out.css')}}"/>
-    <script defer src="static/js/script.js"></script>
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-</head>
-
-<body class="font-sans bg-pink-50">
-    <!-- header section starts -->
-    <header class="fixed top-0 left-0 right-0 bg-white py-4 px-6 md:px-12 flex items-center justify-between shadow-md z-50">
-        <input type="checkbox" id="toggler" class="hidden">
-        <label for="toggler" class="fas fa-bars text-3xl text-gray-700 cursor-pointer lg:hidden"></label>
-        <a href="#" class="text-3xl font-bold text-gray-800">KilaShop<span class="text-pink-600">.</span></a>
-        <nav class="hidden lg:flex space-x-6" id="menuItems">
-            <a href="#about" class="text-lg text-gray-600 hover:text-pink-600 transition">About</a>
-            <a href="#products" class="text-lg text-gray-600 hover:text-pink-600 transition">Products</a>
-            <a href="#contact" class="text-lg text-gray-600 hover:text-pink-600 transition">Contact</a>
-        </nav>
-        <!-- Search Bar with Voice and Image Search -->
-        <div class="flex items-center space-x-4">
-            <input type="text" placeholder="Search..." class="p-2 border rounded">
-            <button id="voice-search-btn" class="p-2 text-gray-700 hover:text-pink-600 transition"><i class="fas fa-microphone"></i></button>
-            <input type="file" id="image-search-input" class="hidden">
-            <label for="image-search-input" class="p-2 text-gray-700 hover:text-pink-600 transition cursor-pointer"><i class="fas fa-camera"></i></label>
-        </div>
-        <div class="hidden lg:flex space-x-4 text-2xl text-gray-700">
-            <a href="/cart" class="fas fa-shopping-cart hover:text-pink-600 transition"></a>
-        </div>
-    </header>
-    <!-- header section ends -->
-
-    <!-- Mobile Menu -->
-    <div class="lg:hidden fixed top-0 left-0 right-0 bg-white py-4 px-6 md:px-12 flex flex-col items-center justify-center shadow-md z-50 hidden" id="mobileMenu">
-        <a href="#about" class="text-lg text-gray-600 hover:text-pink-600 transition mb-4">About</a>
-        <a href="#products" class="text-lg text-gray-600 hover:text-pink-600 transition mb-4">Products</a>
-        <a href="#contact" class="text-lg text-gray-600 hover:text-pink-600 transition mb-4">Contact</a>
-    </div>
-
+{% block content %}
     <!-- home section starts -->
-    <section id="home" class="flex items-center min-h-screen bg-cover bg-center" style="background-image: url('https://i.pinimg.com/564x/b0/2b/d9/b02bd9f5af7843b4bb797cdd6669c29f.jpg');">
+    <section id="home" class="flex items-center min-h-screen bg-cover bg-center"
+             style="background-image: url('https://i.pinimg.com/564x/b0/2b/d9/b02bd9f5af7843b4bb797cdd6669c29f.jpg');">
         <div class="container mx-auto text-center">
             <h3 class="text-6xl text-gray-800 font-bold mb-4">ONLINE SHOPPING</h3>
             <span class="text-2xl text-pink-600 block mb-4">Beauty Care and Fashion</span>
-            <a href="/products" class="inline-block bg-gray-800 text-white text-lg py-2 px-8 rounded-full hover:bg-pink-600 transition">Shop Now</a>
+            <a href="/products"
+               class="inline-block bg-gray-800 text-white text-lg py-2 px-8 rounded-full hover:bg-pink-600 transition">Shop
+                Now</a>
         </div>
     </section>
     <!-- home section ends -->
@@ -62,59 +17,65 @@
     <!-- about section starts -->
     <section class="py-8 px-12" id="about">
 
-        <h1 class="text-center text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">About <span class="text-pink-500">Us</span></h1>
+        <h1 class="text-center text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">About <span
+                class="text-pink-500">Us</span></h1>
 
         <!-- Video and Text -->
         <div class="container mx-auto flex flex-wrap justify-between">
             <div class="swiper w-full mb-8 lg:mb-0">
                 <!-- Additional required wrapper -->
                 <div class="swiper-wrapper w-full">
-                  <!-- Slides -->
-                  <div class="swiper-slide w-full">
-                    <video class="w-full" loop autoplay muted>
-                        <source src="static/video/petal_20221004_212703.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                  </div>
-                  <div class="swiper-slide w-full">
-                    <video class="w-full" loop autoplay muted>
-                        <source src="static/video/fc26e0199fa95c6beb9b1fc10f2bd1e8.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                  </div>
-                  <div class="swiper-slide w-full">
-                    <video class="w-full" loop autoplay muted>
-                        <source src="static/video/40a3f298817ce3ffe11caa1d6485b8e3.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                  </div>
+                    <!-- Slides -->
+                    <div class="swiper-slide w-full">
+                        <video class="w-full" loop autoplay muted>
+                            <source src="static/video/petal_20221004_212703.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="swiper-slide w-full">
+                        <video class="w-full" loop autoplay muted>
+                            <source src="static/video/fc26e0199fa95c6beb9b1fc10f2bd1e8.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="swiper-slide w-full">
+                        <video class="w-full" loop autoplay muted>
+                            <source src="static/video/40a3f298817ce3ffe11caa1d6485b8e3.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
                 </div>
                 <!-- If we need pagination -->
                 <div class="swiper-pagination"></div>
-              
+
                 <!-- If we need navigation buttons -->
                 <div class="swiper-button-prev"></div>
                 <div class="swiper-button-next"></div>
-              
+
                 <!-- If we need scrollbar -->
                 <div class="swiper-scrollbar"></div>
-              </div>
+            </div>
         </div>
         <!-- Text Justify stretch -->
         <div class="container mx-auto mt-8">
-            <p class="text-lg text-gray-600 text-center">KilaShop is a beauty care and fashion online shop that provides various products for your daily needs. We provide the best quality products for you. We have been trusted by many customers and have been established since 2021. We are committed to providing the best service for you.</p>
-        </div>        
+            <p class="text-lg text-gray-600 text-center">KilaShop is a beauty care and fashion online shop that provides
+                various products for your daily needs. We provide the best quality products for you. We have been
+                trusted by many customers and have been established since 2021. We are committed to providing the best
+                service for you.</p>
+        </div>
     </section>
     <!-- about section ends -->
 
     <!-- products section starts  -->
     <section class="py-8 px-4 md:px-16 lg:px-36" id="products">
-        <h1 class="text-center text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">Latest <span class="text-pink-500">Products</span></h1>
+        <h1 class="text-center text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">Latest <span
+                class="text-pink-500">Products</span></h1>
         <div class="flex flex-wrap gap-6 justify-center">
             <div class="w-full sm:w-1/2 md:w-1/2 lg:w-1/4 p-4 border border-gray-200 shadow-lg rounded-lg relative">
                 <span class="absolute top-4 left-4 px-4 py-2 text-lg text-pink-500 bg-pink-100 rounded">-10%</span>
                 <div class="relative text-center overflow-hidden pt-8">
-                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo" class="h-64 transition-transform transform hover:scale-110">
+                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo"
+                         class="h-64 transition-transform transform hover:scale-110">
                     <div class="absolute bottom-0 left-0 right-0 flex justify-center bg-pink-500 text-white">
                         <a href="#" class="flex-1 p-4 hover:bg-gray-800">❤</a>
                         <a href="#" class="flex-1 p-4 border-l border-r border-white hover:bg-gray-800">add to cart</a>
@@ -123,14 +84,16 @@
                 </div>
                 <div class="text-center p-4">
                     <h3 class="text-2xl text-gray-800">scarlett shampoo</h3>
-                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span class="text-gray-500 text-lg line-through">Rp75.000</span></div>
+                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span
+                            class="text-gray-500 text-lg line-through">Rp75.000</span></div>
                 </div>
             </div>
             <!-- Repeat similar block for other products -->
             <div class="w-full sm:w-1/2 md:w-1/2 lg:w-1/4 p-4 border border-gray-200 shadow-lg rounded-lg relative">
                 <span class="absolute top-4 left-4 px-4 py-2 text-lg text-pink-500 bg-pink-100 rounded">-10%</span>
                 <div class="relative text-center overflow-hidden pt-8">
-                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo" class="h-64 transition-transform transform hover:scale-110">
+                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo"
+                         class="h-64 transition-transform transform hover:scale-110">
                     <div class="absolute bottom-0 left-0 right-0 flex justify-center bg-pink-500 text-white">
                         <a href="#" class="flex-1 p-4 hover:bg-gray-800">❤</a>
                         <a href="#" class="flex-1 p-4 border-l border-r border-white hover:bg-gray-800">add to cart</a>
@@ -139,14 +102,16 @@
                 </div>
                 <div class="text-center p-4">
                     <h3 class="text-2xl text-gray-800">scarlett shampoo</h3>
-                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span class="text-gray-500 text-lg line-through">Rp75.000</span></div>
+                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span
+                            class="text-gray-500 text-lg line-through">Rp75.000</span></div>
                 </div>
             </div>
             <!-- Repeat similar block for other products -->
             <div class="w-full sm:w-1/2 md:w-1/2 lg:w-1/4 p-4 border border-gray-200 shadow-lg rounded-lg relative">
                 <span class="absolute top-4 left-4 px-4 py-2 text-lg text-pink-500 bg-pink-100 rounded">-10%</span>
                 <div class="relative text-center overflow-hidden pt-8">
-                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo" class="h-64 transition-transform transform hover:scale-110">
+                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo"
+                         class="h-64 transition-transform transform hover:scale-110">
                     <div class="absolute bottom-0 left-0 right-0 flex justify-center bg-pink-500 text-white">
                         <a href="#" class="flex-1 p-4 hover:bg-gray-800">❤</a>
                         <a href="#" class="flex-1 p-4 border-l border-r border-white hover:bg-gray-800">add to cart</a>
@@ -155,14 +120,16 @@
                 </div>
                 <div class="text-center p-4">
                     <h3 class="text-2xl text-gray-800">scarlett shampoo</h3>
-                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span class="text-gray-500 text-lg line-through">Rp75.000</span></div>
+                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span
+                            class="text-gray-500 text-lg line-through">Rp75.000</span></div>
                 </div>
             </div>
             <!-- Repeat similar block for other products -->
             <div class="w-full sm:w-1/2 md:w-1/2 lg:w-1/4 p-4 border border-gray-200 shadow-lg rounded-lg relative">
                 <span class="absolute top-4 left-4 px-4 py-2 text-lg text-pink-500 bg-pink-100 rounded">-10%</span>
                 <div class="relative text-center overflow-hidden pt-8">
-                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo" class="h-64 transition-transform transform hover:scale-110">
+                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo"
+                         class="h-64 transition-transform transform hover:scale-110">
                     <div class="absolute bottom-0 left-0 right-0 flex justify-center bg-pink-500 text-white">
                         <a href="#" class="flex-1 p-4 hover:bg-gray-800">❤</a>
                         <a href="#" class="flex-1 p-4 border-l border-r border-white hover:bg-gray-800">add to cart</a>
@@ -171,14 +138,16 @@
                 </div>
                 <div class="text-center p-4">
                     <h3 class="text-2xl text-gray-800">scarlett shampoo</h3>
-                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span class="text-gray-500 text-lg line-through">Rp75.000</span></div>
+                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span
+                            class="text-gray-500 text-lg line-through">Rp75.000</span></div>
                 </div>
             </div>
             <!-- Repeat similar block for other products -->
             <div class="w-full sm:w-1/2 md:w-1/2 lg:w-1/4 p-4 border border-gray-200 shadow-lg rounded-lg relative">
                 <span class="absolute top-4 left-4 px-4 py-2 text-lg text-pink-500 bg-pink-100 rounded">-10%</span>
                 <div class="relative text-center overflow-hidden pt-8">
-                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo" class="h-64 transition-transform transform hover:scale-110">
+                    <img src="static/image/fa20df2d17f5e9a7444cbefbc5718720.jpg" alt="scarlett shampoo"
+                         class="h-64 transition-transform transform hover:scale-110">
                     <div class="absolute bottom-0 left-0 right-0 flex justify-center bg-pink-500 text-white">
                         <a href="#" class="flex-1 p-4 hover:bg-gray-800">❤</a>
                         <a href="#" class="flex-1 p-4 border-l border-r border-white hover:bg-gray-800">add to cart</a>
@@ -187,118 +156,38 @@
                 </div>
                 <div class="text-center p-4">
                     <h3 class="text-2xl text-gray-800">scarlett shampoo</h3>
-                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span class="text-gray-500 text-lg line-through">Rp75.000</span></div>
+                    <div class="text-2xl text-pink-500 font-bold pt-4">Rp68.999 <span
+                            class="text-gray-500 text-lg line-through">Rp75.000</span></div>
                 </div>
             </div>
         </div>
     </section>
     <!-- products section ends -->
 
-
     <!-- contact section starts -->
     <section id="contact" class="py-8 px-12">
-        <h1 class="text-center text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">Contact <span class="text-pink-500">Us</span></h1>
+        <h1 class="text-center text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">Contact <span
+                class="text-pink-500">Us</span></h1>
 
         <div class="container mx-auto flex flex-wrap justify-between">
             <form class="w-full lg:w-1/2 bg-white shadow-md rounded-lg p-8 mb-8 lg:mb-0">
-                <input type="text" placeholder="Name" class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
-                <input type="email" placeholder="Email" class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
-                <input type="number" placeholder="Phone Number" class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
-                <textarea placeholder="Message" class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600 h-40 resize-none"></textarea>
-                <input type="submit" value="Send Message" class="w-full bg-gray-800 text-white text-lg py-2 px-8 rounded-full hover:bg-pink-600 transition">
+                <input type="text" placeholder="Name"
+                       class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
+                <input type="email" placeholder="Email"
+                       class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
+                <input type="number" placeholder="Phone Number"
+                       class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
+                <textarea placeholder="Message"
+                          class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600 h-40 resize-none"></textarea>
+                <input type="submit" value="Send Message"
+                       class="w-full bg-gray-800 text-white text-lg py-2 px-8 rounded-full hover:bg-pink-600 transition">
             </form>
             <div class="w-full lg:w-1/2 lg:pl-8 lg:py-8 text-center lg:text-left">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.013292073073!2d107.1463663147696!3d-6.264000995468073!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f2b4b4b4b4b5%3A0x1b1b1b1b1b1b1b1b!2sKilaShop!5e0!3m2!1sid!2sid!4v1633363660734!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.013292073073!2d107.1463663147696!3d-6.264000995468073!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f2b4b4b4b4b5%3A0x1b1b1b1b1b1b1b1b!2sKilaShop!5e0!3m2!1sid!2sid!4v1633363660734!5m2!1sid!2sid"
+                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
             </div>
         </div>
     </section>
     <!-- contact section ends -->
 
-    <!-- footer section starts  -->
-    <footer class="bg-gray-800 text-gray-300 py-12 px-4 text-center">
-        <div class="container mx-auto">
-            <div class="mb-8">
-                <a href="#" class="text-3xl font-bold text-white">KilaShop<span class="text-pink-600">.</span></a>
-            </div>
-            <p class="text-lg mb-8">Follow us on social media for the latest updates and offers.</p>
-            <div class="flex justify-center space-x-4 text-2xl text-gray-300 mb-8">
-                <a href="https://www.facebook.com" class="fab fa-facebook-f hover:text-pink-600 transition"></a>
-                <a href="https://www.twitter.com" class="fab fa-twitter hover:text-pink-600 transition"></a>
-                <a href="https://www.instagram.com" class="fab fa-instagram hover:text-pink-600 transition"></a>
-                <a href="https://www.tiktok.com" class="fab fa-tiktok hover:text-pink-600 transition"></a>
-                <a href="https://shopee.com" class="fas fa-shopping-bag hover:text-pink-600 transition"></a>
-            </div>
-            <div class="text-lg mb-8">
-                <p class="bg-gray-800 hover:underline">Email: <a href="mailto:businesskilashop@gmail.com" class="hover:text-pink-600 transition">businesskilashop@gmail.com</a></p>
-            </div>
-            <p class="text-gray-400">&copy; 2024 KilaShop. All rights reserved.</p>
-        </div>
-    </footer>
-    <!-- footer section ends -->
-    
-    <script>
-        const swiper = new Swiper('.swiper', {
-            // Optional parameters
-            direction: 'horizontal',
-            loop: true,
-          
-            // If we need pagination
-            pagination: {
-              el: '.swiper-pagination',
-            },
-          
-            // Navigation arrows
-            navigation: {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev',
-            },
-          
-            // And if we need scrollbar
-            scrollbar: {
-              el: '.swiper-scrollbar',
-            },
-          });
-
-        document.getElementById('toggler').addEventListener('change', function() {
-            const menu = document.getElementById('menuItems');
-            if (this.checked) {
-                menu.classList.remove('hidden');
-            } else {
-                menu.classList.add('hidden');
-            }
-        });
-
-        // Voice Search
-        document.getElementById('voice-search-btn').addEventListener('click', () => {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.onstart = () => {
-                console.log('Voice recognition started. Try speaking into the microphone.');
-            };
-            recognition.onspeechend = () => {
-                console.log('You were quiet for a while so voice recognition turned itself off.');
-            };
-            recognition.onerror = (event) => {
-                console.error('Error occurred in recognition: ' + event.error);
-            };
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                console.log('Transcript:', transcript);
-                // You can set the input value to the transcript and trigger a search
-                document.querySelector('input[type="text"]').value = transcript;
-            };
-            recognition.start();
-        });
-
-        // Image Search Placeholder Function
-        document.getElementById('image-search-input').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                console.log('File selected:', file);
-                // Placeholder for actual image search function
-                alert('Image search feature is under development.');
-            }
-        });
-    </script>
-</body>
-
-</html>
+{% endblock %}

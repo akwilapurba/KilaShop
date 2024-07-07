@@ -1,0 +1,31 @@
+<header class="fixed top-0 left-0 right-0 bg-white py-4 px-6 md:px-12 flex items-center justify-between shadow-md z-50">
+    <input type="checkbox" id="toggler" class="hidden">
+    <label for="toggler" class="fas fa-bars text-3xl text-gray-700 cursor-pointer lg:hidden"></label>
+    <a href="#" class="text-3xl font-bold text-gray-800">KilaShop<span class="text-pink-600">.</span></a>
+    <nav class="hidden lg:flex space-x-6" id="menuItems">
+        <a href="#about" class="text-lg text-gray-600 hover:text-pink-600 transition">About</a>
+        <a href="#products" class="text-lg text-gray-600 hover:text-pink-600 transition">Products</a>
+        <a href="#contact" class="text-lg text-gray-600 hover:text-pink-600 transition">Contact</a>
+    </nav>
+    <!-- Search Bar with Voice and Image Search -->
+    <div class="flex items-center space-x-4">
+        <input type="text" placeholder="Search..." class="p-2 border rounded">
+        <button id="voice-search-btn" class="p-2 text-gray-700 hover:text-pink-600 transition"><i
+                class="fas fa-microphone"></i></button>
+        <input type="file" id="image-search-input" class="hidden">
+        <label for="image-search-input" class="p-2 text-gray-700 hover:text-pink-600 transition cursor-pointer"><i
+                class="fas fa-camera"></i></label>
+    </div>
+    <div class="hidden lg:flex space-x-4 text-2xl text-gray-700">
+        <a href="/cart" class="fas fa-shopping-cart hover:text-pink-600 transition"></a>
+    </div>
+</header>
+<!-- header section ends -->
+
+<!-- Mobile Menu -->
+<div class="lg:hidden fixed top-0 left-0 right-0 bg-white py-4 px-6 md:px-12 flex flex-col items-center justify-center shadow-md z-50 hidden"
+     id="mobileMenu">
+    <a href="#about" class="text-lg text-gray-600 hover:text-pink-600 transition mb-4">About</a>
+    <a href="#products" class="text-lg text-gray-600 hover:text-pink-600 transition mb-4">Products</a>
+    <a href="#contact" class="text-lg text-gray-600 hover:text-pink-600 transition mb-4">Contact</a>
+</div>
