@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customers Also Viewed</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Tailwind CSS Aspect Ratio Plugin -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/aspect-ratio@0.3.1/dist/aspect-ratio.min.js"></script>
-</head>
-
-<body class="bg-gray-100">
+{% extends 'ui/base.html' %}
+{% block content %}
     <div class="bg-white">
         <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
             <div class="flex items-center justify-between space-x-4">
@@ -23,9 +12,14 @@
             <div class="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
                 <div class="group relative">
                     <div class="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 shadow-lg transition duration-300 transform group-hover:scale-105 group-hover:shadow-xl">
-                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-01.jpg" alt="Payment application dashboard screenshot with transaction table, financial highlights, and main clients on colorful purple background." class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
-                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300" aria-hidden="true">
-                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">View Product</div>
+                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-01.jpg"
+                             alt="Payment application dashboard screenshot with transaction table, financial highlights, and main clients on colorful purple background."
+                             class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
+                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300"
+                             aria-hidden="true">
+                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
+                                View Product
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
@@ -44,9 +38,14 @@
                 <!-- Example of additional products -->
                 <div class="group relative">
                     <div class="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 shadow-lg transition duration-300 transform group-hover:scale-105 group-hover:shadow-xl">
-                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-02.jpg" alt="Detailed image of a sleek modern lamp with adjustable arm and base." class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
-                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300" aria-hidden="true">
-                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">View Product</div>
+                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-02.jpg"
+                             alt="Detailed image of a sleek modern lamp with adjustable arm and base."
+                             class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
+                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300"
+                             aria-hidden="true">
+                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
+                                View Product
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
@@ -63,9 +62,14 @@
 
                 <div class="group relative">
                     <div class="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 shadow-lg transition duration-300 transform group-hover:scale-105 group-hover:shadow-xl">
-                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-03.jpg" alt="Minimalist watch with sleek black band and minimalist white face." class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
-                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300" aria-hidden="true">
-                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">View Product</div>
+                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-03.jpg"
+                             alt="Minimalist watch with sleek black band and minimalist white face."
+                             class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
+                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300"
+                             aria-hidden="true">
+                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
+                                View Product
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
@@ -82,9 +86,14 @@
 
                 <div class="group relative">
                     <div class="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 shadow-lg transition duration-300 transform group-hover:scale-105 group-hover:shadow-xl">
-                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-04.jpg" alt="Elegant chair with wooden frame and dark fabric cushion." class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
-                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300" aria-hidden="true">
-                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">View Product</div>
+                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-04.jpg"
+                             alt="Elegant chair with wooden frame and dark fabric cushion."
+                             class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
+                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300"
+                             aria-hidden="true">
+                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
+                                View Product
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
@@ -104,6 +113,4 @@
 
     <!-- FontAwesome for icons -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-</body>
-
-</html>
+{% endblock %}
