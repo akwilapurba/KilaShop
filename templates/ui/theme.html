@@ -1,7 +1,7 @@
 {% extends 'ui/base.html' %}
 
 {% block body %}
-<body class="font-sans">
+    <body class="font-sans">
     {% include 'components/navbar.html' %}
 
     {% block content %}
@@ -17,22 +17,22 @@
 
             // If we need pagination
             pagination: {
-              el: '.swiper-pagination',
+                el: '.swiper-pagination',
             },
 
             // Navigation arrows
             navigation: {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev',
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
             },
 
             // And if we need scrollbar
             scrollbar: {
-              el: '.swiper-scrollbar',
+                el: '.swiper-scrollbar',
             },
-          });
+        });
 
-        document.getElementById('toggler').addEventListener('change', function() {
+        document.getElementById('toggler').addEventListener('change', function () {
             const menu = document.getElementById('menuItems');
             if (this.checked) {
                 menu.classList.remove('hidden');
@@ -74,13 +74,79 @@
 
         // Smooth Scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+            anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
                     behavior: 'smooth'
                 });
             });
         });
+
+        // Inside index.html or a separate JavaScript file
+        function addToCart(productId) {
+            fetch('/add_to_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({product_id: productId}),
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    // Handle success with SweetAlert or other UI notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Product added to cart',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // Handle error with SweetAlert or other UI notification
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Failed to add product to cart',
+                    });
+                });
+        }
+
+        function removeFromCart(productId) {
+            fetch('/remove_to_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({product_id: productId}),
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    // Handle success with SweetAlert or other UI notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Product removed from cart',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // Handle error with SweetAlert or other UI notification
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Failed to remove product from cart',
+                    });
+                });
+        }
+
     </script>
-</body>
+    </body>
 {% endblock %}

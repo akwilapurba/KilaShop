@@ -1,6 +1,7 @@
 from functools import wraps
 
-from flask import Flask, render_template, redirect, url_for, request, session, flash
+from bson import ObjectId
+from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm
 from wtforms import StringField, DecimalField, SubmitField
@@ -74,7 +75,8 @@ def admin_required(f):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    products = list(product_collection.find())  # Fetch all products from MongoDB
+    return render_template('index.html', products=products)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -125,9 +127,53 @@ def products():
     return render_template('products.html')
 
 
+@app.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+    # Get product ID from the request json data
+    product_id = request.json.get('product_id')
+    product = product_collection.find_one({'_id': ObjectId(product_id)})
+    if not product:
+        print(f"Product not found for ID: {product_id}")
+        return jsonify({'error': 'Product not found'}), 404
+
+    cart_items = session.get('cart', [])
+    cart_items.append({
+        'product_id': str(product['_id']),  # Convert ObjectId to string
+        'name': product['name'],
+        'price': product['price'],
+        'image_path': product['image_path'],
+    })
+    session['cart'] = cart_items
+
+    return jsonify({'message': 'Product added to cart successfully'})
+
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    product_id = request.json.get('product_id')
+
+    if 'cart' in session:
+        cart_items = session['cart']
+        for item in cart_items:
+            if item['product_id'] == product_id:
+                cart_items.remove(item)
+                break  # Stop after removing the first matching item
+
+        session['cart'] = cart_items
+
+    return jsonify({'message': 'Product removed from cart successfully'})
+
 @app.route('/cart')
-def cart():
-    return render_template('cart.html')
+def view_cart():
+    cart_items = session.get('cart', [])
+
+    return render_template('cart.html', cart_items=cart_items)
+
+
+@app.route('/delete_cart', methods=['POST'])
+def delete_cart():
+    session.pop('cart', None)  # Remove the 'cart' key from the session
+    flash('Cart cleared successfully!', 'success')
+    return redirect(url_for('view_cart'))
 
 
 @app.route('/admin')
@@ -138,29 +184,84 @@ def admin():
 # Route for adding a product
 @app.route('/admin/product', methods=['GET', 'POST'])
 def product():
+    if request.method == 'POST':
+        form = ProductForm(request.form)
+        if form.validate():
+            name = form.name.data
+            price = float(form.price.data)  # Convert DecimalField to float
+            image_path = form.image.data  # This should be the path to the image file
+
+            # Insert the product into MongoDB
+            product_data = {
+                'name': name,
+                'price': price,
+                'image_path': image_path,
+            }
+            product_id = product_collection.insert_one(product_data).inserted_id
+
+            # Optionally, you can return the newly added product as JSON
+            return jsonify({
+                'message': 'Product added successfully',
+                'product_id': str(product_id),
+                'name': name,
+                'price': price,
+                'image_path': image_path,
+            })
+        else:
+            # Handle form validation errors
+            return jsonify({'error': 'Form validation failed'}), 400
+
+    # Handle GET request for rendering the page initially
     form = ProductForm()
-    if form.validate_on_submit():
-        name = form.name.data
-        price = float(form.price.data)  # Convert DecimalField to float
-        image_path = form.image.data  # This should be the path to the image file
+    products = list(product_collection.find())
+    return render_template('admin/products.html', form=form, products=products, current_page='product')
 
-        # Insert the product into MongoDB
-        product_data = {
-            'name': name,
-            'price': price,
-            'image_path': image_path,
-        }
-        product_collection.insert_one(product_data)
 
-        flash('Product added successfully!', 'success')
+# Route for editing a product
+@app.route('/admin/product/edit/<string:product_id>', methods=['GET', 'POST'])
+@login_required
+# @admin_required
+def edit_product(product_id):
+    form = ProductForm()
+    product = product_collection.find_one({'_id': ObjectId(product_id)})
+    if not product:
+        flash('Product not found', 'danger')
         return redirect(url_for('product'))
 
-    products = list(product_collection.find())  # Fetch all products from MongoDB
+    if form.validate_on_submit():
+        name = form.name.data
+        price = float(form.price.data)
+        image_path = form.image.data
 
-    # Log the products to the console
-    for product in products:
-        print(product)
-    return render_template('admin/products.html', form=form, products=products, current_page='product')
+        # Update the product in MongoDB
+        product_collection.update_one({'_id': ObjectId(product_id)},
+                                      {'$set': {'name': name, 'price': price, 'image_path': image_path}})
+
+        flash('Product updated successfully!', 'success')
+        return redirect(url_for('product'))
+
+    # Pre-fill the form with existing product data
+    form.name.data = product['name']
+    form.price.data = product['price']
+    form.image.data = product['image_path']
+
+    return render_template('admin/edit_product.html', form=form, product=product)
+
+
+# Route for deleting a product
+@app.route('/admin/product/delete/<string:product_id>', methods=['DELETE'])
+@login_required
+# @admin_required
+def delete_product(product_id):
+    product = product_collection.find_one({'_id': ObjectId(product_id)})
+    if not product:
+        flash('Product not found', 'danger')
+        return redirect(url_for('product'))
+
+    product_collection.delete_one({'_id': ObjectId(product_id)})
+    flash('Product deleted successfully!', 'success')
+    return redirect(url_for('products'))
+
 
 @app.route('/reviews')
 def reviews():

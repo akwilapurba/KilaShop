@@ -26,15 +26,17 @@
                                 </td>
                                 <td class="py-2 px-4 border-b text-center">{{ product.name }}</td>
                                 <td class="py-2 px-4 border-b text-center"
-                                    id="price-{{ product.id }}">{{ "Rp{:,.2f}".format(product.price) }}</td>
+                                    id="price-{{ product._id }}">{{ "Rp{:,.2f}".format(product.price) }}</td>
                                 <td class="py-2 px-4 border-b text-center">
-                                    <button class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 focus:outline-none">
-                                        Edit
+                                    <button class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 focus:outline-none"
+                                            onclick="editProduct('{{ product._id }}')">Edit
                                     </button>
-                                    <button class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none">
-                                        Delete
+
+                                    <button class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none"
+                                            onclick="deleteProduct('{{ product._id }}')">Delete
                                     </button>
                                 </td>
+
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -82,7 +84,7 @@
 
 {% block scripts %}
     <script>
-        {# Open the modal for adding a new product#}
+        // Open the modal for adding a new product
         const addProductBtn = document.getElementById('add-product-btn');
         const addProductModal = document.getElementById('add-product-modal');
         const closeModalBtn = document.getElementById('cancel-btn');
@@ -95,7 +97,7 @@
             addProductModal.classList.add('hidden');
         });
 
-        {# Handle form submission for adding a new product#}
+        // Handle form submission for adding a new product
         const addProductForm = document.getElementById('add-product-form');
 
         addProductForm.addEventListener('submit', async (e) => {
@@ -103,39 +105,90 @@
 
             const formData = new FormData(addProductForm);
             try {
-                const response = await fetch('/admin/products', {
+                const response = await fetch('/admin/product', {
                     method: 'POST',
                     body: formData
                 });
-                if (!response.ok) {
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('Product added successfully:', responseData);
+                    // Handle success with SweetAlert or other UI notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Product added successfully',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    fetchProductList(); // Update product list
+                } else {
                     throw new Error('Failed to add product');
                 }
-                const data = await response.json(); // Assuming your server returns JSON response
-                // Optional: Handle success message or update UI
-                console.log('Product added successfully:', data);
-                addProductModal.classList.add('hidden');
-                // Example: Reload or update product list
-                fetchProductList(); // Define this function to fetch and update product list
             } catch (error) {
                 console.error('Error adding product:', error.message);
-                // Optional: Display error message to the user
+                // Handle error with SweetAlert or other UI notification
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to add product',
+                });
             }
         });
 
-        {#Example function to fetch and update product list after adding a product#}
+        // Function to handle editing a product
+        function editProduct(productId) {
+            window.location.href = `/admin/product/edit/${productId}`;
+        }
+
+        // Function to handle deleting a product
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                fetch(`/admin/product/delete/${productId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to delete product');
+                        }
+                        // Optional: Handle success message or update UI
+                        console.log('Product deleted successfully');
+                        // Notify user with SweetAlert
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Product deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        fetchProductList(); // Define this function to fetch and update product list
+                    })
+                    .catch(error => {
+                        console.error('Error deleting product:', error.message);
+                        // Optional: Display error message to the user
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Failed to delete product',
+                        });
+                    });
+            }
+        }
+
+        // Function to fetch and update product list after adding or deleting a product
         async function fetchProductList() {
             try {
-                const response = await fetch('/admin/products');
+                const response = await fetch('/admin/product');
                 if (!response.ok) {
                     throw new Error('Failed to fetch product list');
                 }
                 const products = await response.json(); // Assuming your server returns JSON array of products
+                // Update product table or UI here
             } catch (error) {
                 console.error('Error fetching product list:', error.message);
                 // Optional: Display error message to the user
             }
         }
-
     </script>
 {% endblock %}
+
 

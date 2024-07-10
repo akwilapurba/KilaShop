@@ -1,165 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'ui/theme.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KilaShop Website</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/out.css')}}">
-    <script defer src="static/js/script.js"></script>
-</head>
+{% block content %}
+    <div class="bg-white">
+        <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-0">
+            <h1 class="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Shopping Cart</h1>
 
-<body class="font-sans bg-white">
-    <div class="bg-pink-50">
-        <div class="mx-auto max-w-4xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-            <h1 class="text-center text-4xl text-gray-800 py-4 px-6 my-8 bg-pink-100">
-              <span class="text-pink-600">Shopping</span> Cart
-            </h1>
             <form class="mt-12">
-                <div>
-                    <h2 class="sr-only">Items in your shopping cart</h2>
+                <section aria-labelledby="cart-heading">
+                    <h2 id="cart-heading" class="sr-only">Items in your shopping cart</h2>
 
-                    <ul role="list" class="divide-y divide-gray-500 border-b border-t border-gray-500">
-                        <li class="flex py-6 sm:py-10">
-                            <div class="flex-shrink-0">
-                                <img src="https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-03.jpg" alt="Insulated bottle with white base and black snap lid." class="h-24 w-24 rounded-lg object-cover object-center sm:h-32 sm:w-32">
-                            </div>
-
-                            <div class="relative ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                                <div>
-                                    <div class="flex justify-between sm:grid sm:grid-cols-2">
-                                        <div class="pr-6">
-                                            <h3 class="text-sm">
-                                                <a href="#" class="font-medium text-gray-700 hover:text-gray-800">Nomad Tumbler</a>
-                                            </h3>
-                                            <p class="mt-1 text-sm text-gray-500">White</p>
-                                        </div>
-
-                                        <p class="text-right text-sm font-medium text-gray-900">$35.00</p>
-                                    </div>
-
-                                    <div class="mt-4 flex items-center sm:absolute sm:left-1/2 sm:top-0 sm:mt-0 sm:block">
-                                        <label for="quantity-0" class="sr-only">Quantity, Nomad Tumbler</label>
-                                        <select id="quantity-0" name="quantity-0" class="block max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500 sm:text-sm">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                        </select>
-
-                                        <button type="button" class="ml-4 text-sm font-medium text-pink-600 hover:text-pink-500 sm:ml-0 sm:mt-3">
-                                            <span>Remove</span>
-                                        </button>
-                                    </div>
+                    <ul role="list" class="divide-y divide-gray-200 border-b border-t border-gray-200">
+                        {% set subtotal = 0 %}
+                        {% for item in cart_items %}
+                            {% set subtotal = subtotal + item.price %}
+                            <li class="cart-item flex py-6">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ item.image_path }}"
+                                         alt="{{ item.name }}"
+                                         class="h-24 w-24 rounded-md object-cover object-center sm:h-32 sm:w-32">
                                 </div>
 
-                                <p class="mt-4 flex space-x-2 text-sm text-gray-700">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-green-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                    </svg>
-                                    <span>In stock</span>
-                                </p>
-                            </div>
-                        </li>
-                        <li class="flex py-6 sm:py-10">
-                            <div class="flex-shrink-0">
-                                <img src="https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-01.jpg" alt="Front of men's Basic Tee in sienna." class="h-24 w-24 rounded-lg object-cover object-center sm:h-32 sm:w-32">
-                            </div>
-
-                            <div class="relative ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                                <div>
-                                    <div class="flex justify-between sm:grid sm:grid-cols-2">
-                                        <div class="pr-6">
-                                            <h3 class="text-sm">
-                                                <a href="#" class="font-medium text-gray-700 hover:text-gray-800">Basic Tee</a>
-                                            </h3>
-                                            <p class="mt-1 text-sm text-gray-500">Sienna</p>
-                                            <p class="mt-1 text-sm text-gray-500">Large</p>
+                                <div class="ml-4 flex-1 flex flex-col sm:ml-6">
+                                    <div>
+                                        <div class="flex justify-between">
+                                            <h4 class="text-sm">
+                                                <a href="{{ item._id }}"
+                                                   class="font-medium text-gray-700 hover:text-gray-800">{{ item.name }}</a>
+                                            </h4>
+                                            <p id="price-{{ item._id }}"
+                                               data-raw-price="{{ item.price }}"
+                                               class="item-price ml-4 text-sm font-medium text-gray-900">{{ "Rp{:,.2f}".format(item.price) }}</p>
                                         </div>
-
-                                        <p class="text-right text-sm font-medium text-gray-900">$32.00</p>
                                     </div>
 
-                                    <div class="mt-4 flex items-center sm:absolute sm:left-1/2 sm:top-0 sm:mt-0 sm:block">
-                                        <label for="quantity-1" class="sr-only">Quantity, Basic Tee</label>
-                                        <select id="quantity-1" name="quantity-1" class="block max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500 sm:text-sm">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                        </select>
-
-                                        <button type="button" class="ml-4 text-sm font-medium text-pink-600 hover:text-pink-500 sm:ml-0 sm:mt-3">
-                                            <span>Remove</span>
-                                        </button>
+                                    <div class="mt-4 flex flex-1 items-end justify-between">
+                                        <p class="flex items-center space-x-2 text-sm text-gray-700">
+                                            <i class="fas fa-check text-green-500"></i>
+                                            <span>In stock</span>
+                                        </p>
+                                        <div class="ml-4">
+                                            <button type="button"
+                                                    class="remove-from-cart text-sm font-medium text-pink-600 hover:text-pink-500"
+                                                    onclick="removeFromCart('{{ item._id }}')">
+                                                <span>Remove</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <p class="mt-4 flex space-x-2 text-sm text-gray-700">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-green-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                    </svg>
-                                    <span>In stock</span>
-                                </p>
-                            </div>
-                        </li>
-
-                        <!-- More products... -->
+                            </li>
+                        {% endfor %}
                     </ul>
-                </div>
+                </section>
 
                 <!-- Order summary -->
-                <div class="mt-10 flex justify-center">
-                    <div class="rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:p-8 max-w-md w-full">                       
-                          <h2 class="text-2xl font-bold text-gray-900 text-center">Order summary</h2> 
-                        <div class="flow-root">
-                            <dl class="-my-4 divide-y divide-gray-300 text-sm">
-                                <div class="flex items-center justify-between py-4">
-                                    <dt class="text-gray-600">Subtotal</dt>
-                                    <dd class="font-medium text-gray-900">$99.00</dd>
-                                </div>
-                                <div class="flex items-center justify-between py-4">
-                                    <dt class="text-gray-600">Shipping</dt>
-                                    <dd class="font-medium text-gray-900">$5.00</dd>
-                                </div>
-                                <div class="flex items-center justify-between py-4">
-                                    <dt class="text-gray-600">Tax</dt>
-                                    <dd class="font-medium text-gray-900">$8.32</dd>
-                                </div>
-                                <div class="flex items-center justify-between py-4">
-                                    <dt class="text-base font-medium text-gray-900">Order total</dt>
-                                    <dd class="text-base font-medium text-gray-900">$112.32</dd>
-                                </div>
-                            </dl>
-                        </div>
+                <section aria-labelledby="summary-heading" class="mt-10">
+                    <h2 id="summary-heading" class="sr-only">Order summary</h2>
+
+                    <div>
+                        <dl class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <dt class="text-base font-medium text-gray-900">Subtotal</dt>
+                                <dd id="subtotal"
+                                    data-raw-price="{{ subtotal }}"
+                                    class="ml-4 text-base font-medium text-gray-900">{{ subtotal }}</dd>
+                            </div>
+                        </dl>
+                        <p class="mt-1 text-sm text-gray-500">Shipping and taxes will be calculated at checkout.</p>
                     </div>
-                </div>
 
-                <div class="mt-10 flex justify-center">
-                    <button type="submit" class="w-full max-w-md rounded-md border border-transparent bg-pink-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-gray-50">Checkout</button>
-                </div>
+                    <div class="mt-10">
+                        <button type="submit"
+                                class="w-full flex justify-center items-center py-3 px-6 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-pink-500 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Checkout
+                        </button>
+                    </div>
 
-                <div class="mt-6 text-center text-sm text-gray-500">
-                    <p>
-                        or
-                        <a href="#" class="font-medium text-pink-600 hover:text-pink-500">
-                            Continue Shopping
-                            <span aria-hidden="true"> &rarr;</span>
-                        </a>
-                    </p>
-                </div>
+                    <div class="mt-6 text-center text-sm">
+                        <p>
+                            or
+                            <a href="/" class="font-medium text-pink-600 hover:text-pink-500">
+                                Continue Shopping
+                                <span aria-hidden="true"> &rarr;</span>
+                            </a>
+                        </p>
+                    </div>
+                </section>
             </form>
         </div>
     </div>
-</body>
 
-</html>
+    <script>
+        function updateSubtotal() {
+            let subtotal = 0;
+            const cartItems = document.querySelectorAll('.cart-item');
+
+            cartItems.forEach(item => {
+                // Get the price from data-raw-price attribute
+                const priceElement = item.querySelector('.item-price');
+                const rawPrice = parseFloat(priceElement.getAttribute('data-raw-price'));
+                subtotal += rawPrice;
+            });
+
+            const subtotalElement = document.getElementById('subtotal');
+            subtotalElement.setAttribute('data-raw-price', subtotal);
+            subtotalElement.innerText = `Rp${subtotal.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+        }
+
+        // Call the function when the page loads or when items are added/removed from the cart
+        document.addEventListener('DOMContentLoaded', updateSubtotal);
+    </script>
+
+{% endblock %}
