@@ -115,13 +115,13 @@
                 });
         }
 
-        function removeFromCart(productId) {
-            fetch('/remove_to_cart', {
+        function emptyCart() {
+            fetch('/empty_cart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({product_id: productId}),
+                body: JSON.stringify({}),
             })
 
                 .then(response => response.json())

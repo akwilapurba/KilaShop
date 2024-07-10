@@ -169,8 +169,8 @@ def view_cart():
     return render_template('cart.html', cart_items=cart_items)
 
 
-@app.route('/delete_cart', methods=['POST'])
-def delete_cart():
+@app.route('/empty_cart', methods=['POST'])
+def empty_cart():
     session.pop('cart', None)  # Remove the 'cart' key from the session
     flash('Cart cleared successfully!', 'success')
     return redirect(url_for('view_cart'))

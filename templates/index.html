@@ -83,7 +83,7 @@
 
                         {# Image #}
                         <div class="w-2/3 h-[220px] overflow-hidden mx-auto aspect-w-16 aspect-h-8">
-                            <img src="{{ product.image_path }}" alt="{{ product.name }}"
+                            <img src="{{ product.image_path }}" alt="{{ product._id }}_{{ product.name }}"
                                  class="h-full w-full object-contain"/>
                         </div>
                     </div>
@@ -91,12 +91,13 @@
                     {# Product Details #}
                     <div class="text-center bg-gray-100 p-6">
                         <h3 class="text-lg font-bold text-gray-800">{{ product.name }}</h3>
-                        <h4 class="text-lg text-gray-800 font-bold mt-6">{{ "Rp{:,.2f}".format(product.price) }} <strike
-                                class="text-gray-400 ml-2 font-medium">{{ "Rp{:,.2f}".format(product.price*1.20) }}</strike>
+                        <h4 class="text-lg text-gray-800 font-bold mt-6">{{ "Rp{:,.2f}".format(product.price) }} <span
+                                class="text-gray-400 ml-2 font-medium"
+                                style="text-decoration: line-through;">{{ "Rp{:,.2f}".format(product.price*1.20) }}</span>
                         </h4>
 
                         <button type="button" onclick="addToCart('{{ product._id }}')"
-                                class="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-yellow-400 text-base text-gray-800 font-semibold rounded-xl hover:bg-yellow-500 transition">
+                                class="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-pink-500 text-base text-white font-semibold rounded-xl hover:bg-pink-700 hover:text-gray-200 transition">
                             <i class="fas fa-shopping-cart"></i>
                             Add to cart
                         </button>

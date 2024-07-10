@@ -31,6 +31,8 @@
                                                data-raw-price="{{ item.price }}"
                                                class="item-price ml-4 text-sm font-medium text-gray-900">{{ "Rp{:,.2f}".format(item.price) }}</p>
                                         </div>
+
+                                        <p class="mt-1 text-sm text-gray-500">Product ID: {{ item.product_id }}</p>
                                     </div>
 
                                     <div class="mt-4 flex flex-1 items-end justify-between">
@@ -41,7 +43,7 @@
                                         <div class="ml-4">
                                             <button type="button"
                                                     class="remove-from-cart text-sm font-medium text-pink-600 hover:text-pink-500"
-                                                    onclick="removeFromCart('{{ item._id }}')">
+                                                    onclick="removeFromCart('{{ item.product_id }}')">
                                                 <span>Remove</span>
                                             </button>
                                         </div>
@@ -62,7 +64,7 @@
                                 <dt class="text-base font-medium text-gray-900">Subtotal</dt>
                                 <dd id="subtotal"
                                     data-raw-price="{{ subtotal }}"
-                                    class="ml-4 text-base font-medium text-gray-900">{{ subtotal }}</dd>
+                                    class="ml-4 text-base font-medium text-gray-900">{{ "Rp{:,.2f}".format(subtotal) }}</dd>
                             </div>
                         </dl>
                         <p class="mt-1 text-sm text-gray-500">Shipping and taxes will be calculated at checkout.</p>
@@ -108,6 +110,43 @@
 
         // Call the function when the page loads or when items are added/removed from the cart
         document.addEventListener('DOMContentLoaded', updateSubtotal);
+
+        function removeFromCart(productId) {
+            fetch('/remove_from_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({product_id: productId}),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    // Handle success with SweetAlert or other UI notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Product removed from cart',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // Remove the item from the DOM
+                        const cartItem = document.querySelector(`[onclick="removeFromCart('${productId}')"]`).closest('.cart-item');
+                        cartItem.remove();
+                        // Update the subtotal
+                        updateSubtotal();
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // Handle error with SweetAlert or other UI notification
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Failed to remove product from cart',
+                    });
+                });
+        }
     </script>
 
 {% endblock %}
