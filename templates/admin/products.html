@@ -1,0 +1,141 @@
+{% extends 'ui/admin/base.html' %}
+
+{% block content %}
+    <div class="flex-1 p-10">
+        <div id="products-section" class="flex-1 p-10">
+            <h1 class="text-3xl font-semibold text-gray-800">Manage Products</h1>
+            <div class="mt-6">
+                <p class="text-gray-600">Add, edit, and delete products from your inventory.</p>
+                <div class="mt-6">
+                    <button id="add-product-btn" class="bg-pink-600 text-white py-2 px-4 rounded">Add Product</button>
+                    <table class="mt-4 min-w-full bg-white table-auto overflow-x-auto">
+                        <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b text-center">Product Image</th>
+                            <th class="py-2 px-4 border-b text-center">Product Name</th>
+                            <th class="py-2 px-4 border-b text-center">Price</th>
+                            <th class="py-2 px-4 border-b text-center">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="product-table-body">
+                        {% for product in products %}
+                            <tr>
+                                <td class="py-2 px-4 border-b text-center">
+                                    <img src="{{ product.image_path }}" alt="{{ product.name }}"
+                                         class="h-16 w-16 object-cover mx-auto">
+                                </td>
+                                <td class="py-2 px-4 border-b text-center">{{ product.name }}</td>
+                                <td class="py-2 px-4 border-b text-center"
+                                    id="price-{{ product.id }}">{{ "Rp{:,.2f}".format(product.price) }}</td>
+                                <td class="py-2 px-4 border-b text-center">
+                                    <button class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 focus:outline-none">
+                                        Edit
+                                    </button>
+                                    <button class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal for adding a new product -->
+        <div id="add-product-modal"
+             class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white p-6 rounded shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">Add New Product</h2>
+                <form method="POST" action="{{ url_for('product') }}" enctype="multipart/form-data"
+                      id="add-product-form">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-4">
+                        {{ form.name.label(class="block text-gray-700") }}
+                        {{ form.name(class="w-full px-4 py-2 border rounded", required=True) }}
+                    </div>
+                    <div class="mb-4">
+                        {{ form.price.label(class="block text-gray-700") }}
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-700">Rp</span>
+                            {{ form.price(class="pl-8 w-full px-4 py-2 border rounded", required=True) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.image.label(class="block text-gray-700") }}
+                        {{ form.image(class="w-full px-4 py-2 border rounded", required=True, accept="image/*") }}
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" id="cancel-btn" class="bg-gray-500 text-white py-2 px-4 rounded mr-2">
+                            Cancel
+                        </button>
+                        <button type="submit" class="bg-pink-600 text-white py-2 px-4 rounded">Add Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        {# Open the modal for adding a new product#}
+        const addProductBtn = document.getElementById('add-product-btn');
+        const addProductModal = document.getElementById('add-product-modal');
+        const closeModalBtn = document.getElementById('cancel-btn');
+
+        addProductBtn.addEventListener('click', () => {
+            addProductModal.classList.remove('hidden');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            addProductModal.classList.add('hidden');
+        });
+
+        {# Handle form submission for adding a new product#}
+        const addProductForm = document.getElementById('add-product-form');
+
+        addProductForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(addProductForm);
+            try {
+                const response = await fetch('/admin/products', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to add product');
+                }
+                const data = await response.json(); // Assuming your server returns JSON response
+                // Optional: Handle success message or update UI
+                console.log('Product added successfully:', data);
+                addProductModal.classList.add('hidden');
+                // Example: Reload or update product list
+                fetchProductList(); // Define this function to fetch and update product list
+            } catch (error) {
+                console.error('Error adding product:', error.message);
+                // Optional: Display error message to the user
+            }
+        });
+
+        {#Example function to fetch and update product list after adding a product#}
+        async function fetchProductList() {
+            try {
+                const response = await fetch('/admin/products');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch product list');
+                }
+                const products = await response.json(); // Assuming your server returns JSON array of products
+            } catch (error) {
+                console.error('Error fetching product list:', error.message);
+                // Optional: Display error message to the user
+            }
+        }
+
+    </script>
+{% endblock %}
+

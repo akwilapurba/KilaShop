@@ -1,3 +1,5 @@
+from functools import wraps
+
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm
@@ -47,6 +49,29 @@ class ProductForm(FlaskForm):
     submit = SubmitField('Add Product')
 
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in session:
+            flash('Please log in to access this page', 'warning')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user = user_collection.find_one({'username': session['username']})
+        if not user or user['role'] != 'admin':
+            flash('You do not have permission to access this page', 'danger')
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -66,6 +91,7 @@ def register():
             'last_name': form.last_name.data,
             'phone_number': form.phone_number.data,
             'address': form.address.data,
+            'role': 'member'
         }
         user_collection.insert_one(user_data)
         flash('Your account has been created! You are now able to log in', 'success')
@@ -106,16 +132,16 @@ def cart():
 
 @app.route('/admin')
 def admin():
-    return render_template('admin.html')
+    return render_template('admin/dashboard.html', current_page='dashboard')
 
 
 # Route for adding a product
-@app.route('/admin/add_product', methods=['GET', 'POST'])
-def add_product():
+@app.route('/admin/product', methods=['GET', 'POST'])
+def product():
     form = ProductForm()
     if form.validate_on_submit():
         name = form.name.data
-        price = form.price.data
+        price = float(form.price.data)  # Convert DecimalField to float
         image_path = form.image.data  # This should be the path to the image file
 
         # Insert the product into MongoDB
@@ -126,13 +152,19 @@ def add_product():
         }
         product_collection.insert_one(product_data)
 
-        return redirect(url_for('index'))
-    return render_template('add_product.html', form=form)
+        flash('Product added successfully!', 'success')
+        return redirect(url_for('product'))
 
+    products = list(product_collection.find())  # Fetch all products from MongoDB
+
+    # Log the products to the console
+    for product in products:
+        print(product)
+    return render_template('admin/products.html', form=form, products=products, current_page='product')
 
 @app.route('/reviews')
 def reviews():
-    return render_template('reviews.html')
+    return render_template('reviews.html', current_page='reviews')
 
 
 if __name__ == '__main__':
