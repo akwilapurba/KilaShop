@@ -1,0 +1,86 @@
+{% extends 'ui/base.html' %}
+
+{% block body %}
+<body class="font-sans">
+    {% include 'components/navbar.html' %}
+
+    {% block content %}
+    {% endblock %}
+
+    {% include 'components/footer.html' %}
+
+    <script>
+        const swiper = new Swiper('.swiper', {
+            // Optional parameters
+            direction: 'horizontal',
+            loop: true,
+
+            // If we need pagination
+            pagination: {
+              el: '.swiper-pagination',
+            },
+
+            // Navigation arrows
+            navigation: {
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
+            },
+
+            // And if we need scrollbar
+            scrollbar: {
+              el: '.swiper-scrollbar',
+            },
+          });
+
+        document.getElementById('toggler').addEventListener('change', function() {
+            const menu = document.getElementById('menuItems');
+            if (this.checked) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Voice Search
+        document.getElementById('voice-search-btn').addEventListener('click', () => {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.onstart = () => {
+                console.log('Voice recognition started. Try speaking into the microphone.');
+            };
+            recognition.onspeechend = () => {
+                console.log('You were quiet for a while so voice recognition turned itself off.');
+            };
+            recognition.onerror = (event) => {
+                console.error('Error occurred in recognition: ' + event.error);
+            };
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                console.log('Transcript:', transcript);
+                // You can set the input value to the transcript and trigger a search
+                document.querySelector('input[type="text"]').value = transcript;
+            };
+            recognition.start();
+        });
+
+        // Image Search Placeholder Function
+        document.getElementById('image-search-input').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                console.log('File selected:', file);
+                // Placeholder for actual image search function
+                alert('Image search feature is under development.');
+            }
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'ui/base.html' %}
+
+{% block body %}
+    <body class="font-sans bg-gray-100">
+    <div class="min-h-screen flex flex-col items-center justify-center">
+        <div class="max-w-xl w-full p-4 m-4 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md">
+            <div class="max-w-md w-full py-4 mx-auto">
+                <form method="POST" action="{{ url_for('register') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-12">
+                        <h3 class="text-gray-800 text-3xl font-extrabold">Register</h3>
+                        <p class="text-sm mt-4 text-gray-800">Already have an account? <a href="{{ url_for('login') }}"
+                                                                                          class="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Login
+                            here</a></p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            {{ form.username.label(class="text-gray-800 text-xs block mb-2") }}
+                            <div class="relative flex items-center">
+                                {{ form.username(class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none", placeholder="Enter username") }}
+                                {% if form.username.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.username.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form.email.label(class="text-gray-800 text-xs block mb-2") }}
+                            <div class="relative flex items-center">
+                                {{ form.email(class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none", placeholder="Enter email") }}
+                                {% if form.email.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.email.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form.password.label(class="text-gray-800 text-xs block mb-2") }}
+                            <div class="relative flex items-center">
+                                {{ form.password(class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none", placeholder="Enter password") }}
+                                {% if form.password.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.password.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form.confirm_password.label(class="text-gray-800 text-xs block mb-2") }}
+                            <div class="relative flex items-center">
+                                {{ form.confirm_password(class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none", placeholder="Confirm password") }}
+                                {% if form.confirm_password.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.confirm_password.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form.first_name.label(class="text-gray-800 text-xs block mb-2") }}
+                            <div class="relative flex items-center">
+                                {{ form.first_name(class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none", placeholder="Enter first name") }}
+                                {% if form.first_name.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.first_name.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form.middle_name.label(class="text-gray-800 text-xs block mb-2") }}
+                            <div class="relative flex items-center">
+                                {{ form.middle_name(class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none", placeholder="Enter middle name") }}
+                                {% if form.middle_name.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.middle_name.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form.last_name.label(class="text-gray-800 text-xs block mb-2") }}
+                            <div class="relative flex items-center">
+                                {{ form.last_name(class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none", placeholder="Enter last name") }}
+                                {% if form.last_name.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.last_name.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form.phone_number.label(class="text-gray-800 text-xs block mb-2") }}
+                            <div class="relative flex items-center">
+                                {{ form.phone_number(class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none", placeholder="Enter phone number") }}
+                                {% if form.phone_number.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.phone_number.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-span-2">
+                            {{ form.address.label(class="text-gray-800 text-xs block mb-2") }}
+                            <div class="relative flex items-center">
+                                {{ form.address(class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none", placeholder="Enter address") }}
+                                {% if form.address.errors %}
+                                    <p class="text-red-500 text-xs mt-1">{{ form.address.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12">
+                        {{ form.submit(class="w-full shadow-xl py-2.5 px-4 text-sm tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none hover:cursor-pointer") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </body>
+
+{% endblock %}

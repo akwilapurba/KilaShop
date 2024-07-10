@@ -16,7 +16,15 @@
         <label for="image-search-input" class="p-2 text-gray-700 hover:text-pink-600 transition cursor-pointer"><i
                 class="fas fa-camera"></i></label>
     </div>
+
     <div class="hidden lg:flex space-x-4 text-2xl text-gray-700">
+        {% if session.get('username') %}
+            <a href="/logout" class="text-lg text-gray-600 hover:text-pink-600 transition">Logout</a>
+        {% else %}
+            <a href="/login" class="text-lg text-gray-600 hover:text-pink-600 transition">Login</a>
+            <a href="/register" class="text-lg text-gray-600 hover:text-pink-600 transition">Register</a>
+        {% endif %}
+
         <a href="/cart" class="fas fa-shopping-cart hover:text-pink-600 transition"></a>
     </div>
 </header>
