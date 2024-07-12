@@ -1,5 +1,8 @@
+import os
+import time
 from functools import wraps
 
+import midtransclient
 from bson import ObjectId
 from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
 from flask_bcrypt import Bcrypt
@@ -9,14 +12,25 @@ from wtforms.fields import PasswordField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from pymongo import MongoClient
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 app = Flask(__name__, template_folder='templates', static_folder='static')
-app.secret_key = 'your_secret_key'
+app.secret_key = os.getenv('SECRET_KEY')
 
 # MongoDB connection
-client = MongoClient('mongodb://localhost:27017/')
-db = client['kilashop']
+client = MongoClient(os.getenv('MONGO_URI'))
+db = client[os.getenv('MONGO_DB_NAME')]
 product_collection = db['product']
 user_collection = db['user']
+transaction_collection = db['transaction']
+
+snap = midtransclient.Snap(
+    is_production=False,
+    server_key=os.getenv('MIDTRANS_SERVER_KEY'),
+    client_key=os.getenv('MIDTRANS_CLIENT_KEY')
+)
 
 # Bcrypt
 bcrypt = Bcrypt(app)
@@ -147,6 +161,7 @@ def add_to_cart():
 
     return jsonify({'message': 'Product added to cart successfully'})
 
+
 @app.route('/remove_from_cart', methods=['POST'])
 def remove_from_cart():
     product_id = request.json.get('product_id')
@@ -161,6 +176,7 @@ def remove_from_cart():
         session['cart'] = cart_items
 
     return jsonify({'message': 'Product removed from cart successfully'})
+
 
 @app.route('/cart')
 def view_cart():
@@ -263,9 +279,79 @@ def delete_product(product_id):
     return redirect(url_for('products'))
 
 
-@app.route('/reviews')
-def reviews():
-    return render_template('reviews.html', current_page='reviews')
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    cart_items = session.get('cart', [])
+    if not cart_items:
+        return jsonify({'error': 'Cart is empty'}), 400
+
+    total_amount = sum(item['price'] for item in cart_items)
+
+    user = user_collection.find_one({'username': session['username']})
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    transaction_items = []
+
+    for item in cart_items:
+        transaction_items.append({
+            'id': item['product_id'],
+            'price': int(item['price']),
+            'quantity': 1,
+            'name': item['name']
+        })
+
+    transaction_details = {
+        'order_id': f'order-{int(time.time())}',
+        'gross_amount': sum([item['price'] for item in cart_items]),
+    }
+
+    transaction = {
+        'order_id': transaction_details['order_id'],
+        'user_id': user['_id'],
+        'items': cart_items,
+        'total_amount': total_amount,
+        'status': 'pending',
+        'created_at': time.strftime('%Y-%m-%d %H:%M:%S'),
+        'updated_at': time.strftime('%Y-%m-%d %H:%M:%S')
+    }
+
+    transaction_collection.insert_one(transaction)
+
+    customer_details = {
+        'first_name': user['first_name'],
+        'last_name': user['last_name'],
+        'email': user['email'],
+        'phone': user['phone_number'],
+    }
+
+    transaction_payload = {
+        'transaction_details': transaction_details,
+        'customer_details': customer_details,
+    }
+
+    transaction_token = snap.create_transaction(transaction_payload)['token']
+
+    return jsonify({'token': transaction_token})
+
+
+@app.route('/transaction_status', methods=['POST'])
+def transaction_status():
+    data = request.json
+    order_id = data.get('order_id')
+    transaction_status = data.get('transaction_status')
+    updated_at = time.strftime('%Y-%m-%d %H:%M:%S')
+
+    if not order_id or not transaction_status:
+        return jsonify({'error': 'Invalid data'}), 400
+
+    # Update the transaction status in MongoDB
+    transaction_collection.update_many(
+        {'order_id': order_id},
+        {'$set': {'status': transaction_status, 'updated_at': updated_at}}
+    )
+
+    return jsonify({'message': 'Transaction status updated successfully'})
 
 
 if __name__ == '__main__':

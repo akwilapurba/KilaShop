@@ -5,7 +5,7 @@
         <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:px-0">
             <h1 class="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Shopping Cart</h1>
 
-            <form class="mt-12">
+            <div class="mt-12">
                 <section aria-labelledby="cart-heading">
                     <h2 id="cart-heading" class="sr-only">Items in your shopping cart</h2>
 
@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="mt-10">
-                        <button type="submit"
+                        <button id="checkout-button"
                                 class="w-full flex justify-center items-center py-3 px-6 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-pink-500 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Checkout
                         </button>
@@ -87,9 +87,13 @@
                         </p>
                     </div>
                 </section>
-            </form>
+            </div>
         </div>
     </div>
+
+    <script type="text/javascript"
+            src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="SB-Mid-client-JbeSWMs2Gniw7-of"></script>
 
     <script>
         function updateSubtotal() {
@@ -147,6 +151,62 @@
                     });
                 });
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkoutButton = document.getElementById('checkout-button');
+            checkoutButton.addEventListener('click', function () {
+                fetch('/checkout', {method: 'POST'})
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.token) {
+                            window.snap.pay(data.token, {
+                                onSuccess: function (result) {
+                                    alert('Payment success!');
+                                    updateTransactionStatus(result.order_id, result.transaction_status);
+                                    window.location.href = "/";
+                                },
+                                onPending: function (result) {
+                                    alert('Waiting for payment...');
+                                    updateTransactionStatus(result.order_id, result.transaction_status);
+                                },
+                                onError: function (result) {
+                                    alert('Payment failed!');
+                                    updateTransactionStatus(result.order_id, result.transaction_status);
+                                },
+                                onClose: function () {
+                                    alert('You closed the popup without finishing the payment');
+                                }
+                            });
+                        } else {
+                            alert('Checkout failed');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+
+            function updateTransactionStatus(orderId, transactionStatus) {
+                fetch('/transaction_status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId,
+                        transaction_status: transactionStatus
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Transaction status updated:', data.message);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        });
     </script>
+
 
 {% endblock %}
