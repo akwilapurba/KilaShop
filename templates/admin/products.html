@@ -14,6 +14,7 @@
                             <th class="py-2 px-4 border-b text-center">Product Image</th>
                             <th class="py-2 px-4 border-b text-center">Product Name</th>
                             <th class="py-2 px-4 border-b text-center">Price</th>
+                            <th class="py-2 px-4 border-b text-center">Color</th>
                             <th class="py-2 px-4 border-b text-center">Actions</th>
                         </tr>
                         </thead>
@@ -27,6 +28,7 @@
                                 <td class="py-2 px-4 border-b text-center">{{ product.name }}</td>
                                 <td class="py-2 px-4 border-b text-center"
                                     id="price-{{ product._id }}">{{ "Rp{:,.2f}".format(product.price) }}</td>
+                                <td class="py-2 px-4 border-b text-center">{{ product.color }}</td>
                                 <td class="py-2 px-4 border-b text-center">
                                     <button class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 focus:outline-none"
                                             onclick="editProduct('{{ product._id }}')">Edit
@@ -65,7 +67,10 @@
                             {{ form.price(class="pl-8 w-full px-4 py-2 border rounded", required=True) }}
                         </div>
                     </div>
-
+                    <div class="mb-4">
+                        {{ form.color.label(class="block text-gray-700") }}
+                        {{ form.color(class="w-full px-4 py-2 border rounded", required=True) }}
+                    </div>
                     <div class="mb-4">
                         {{ form.image.label(class="block text-gray-700") }}
                         {{ form.image(class="w-full px-4 py-2 border rounded", required=True, accept="image/*") }}

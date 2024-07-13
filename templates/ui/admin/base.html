@@ -24,9 +24,6 @@
                 <li class="p-4 block py-2.5 px-4 rounded transition duration-200 hover:bg-pink-600 hover:text-white {{ 'bg-pink-600' if current_page == 'product' else '' }}">
                     <a href="{{ url_for('product') }}">Product</a>
                 </li>
-                <li class="p-4 block py-2.5 px-4 rounded transition duration-200 hover:bg-pink-600 hover:text-white {{ 'bg-pink-600' if current_page == 'reviews' else '' }}">
-                    <a href="{{ url_for('reviews') }}">Reviews</a>
-                </li>
                 <li class="p-4 block py-2.5 px-4 rounded transition duration-200 hover:bg-pink-600 hover:text-white">
                     <a href="{{ url_for('logout') }}">Logout</a>
                 </li>

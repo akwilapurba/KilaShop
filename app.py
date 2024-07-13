@@ -60,6 +60,7 @@ class LoginForm(FlaskForm):
 class ProductForm(FlaskForm):
     name = StringField('Product Name', validators=[DataRequired()])
     price = DecimalField('Price', validators=[DataRequired()])
+    color = StringField('Color', validators=[DataRequired()])
     image = StringField('Image Path', validators=[DataRequired()])
     submit = SubmitField('Add Product')
 
@@ -155,6 +156,7 @@ def add_to_cart():
         'product_id': str(product['_id']),  # Convert ObjectId to string
         'name': product['name'],
         'price': product['price'],
+        'color': product['color'],
         'image_path': product['image_path'],
     })
     session['cart'] = cart_items
@@ -205,12 +207,14 @@ def product():
         if form.validate():
             name = form.name.data
             price = float(form.price.data)  # Convert DecimalField to float
+            color = form.color.data
             image_path = form.image.data  # This should be the path to the image file
 
             # Insert the product into MongoDB
             product_data = {
                 'name': name,
                 'price': price,
+                'color': color,
                 'image_path': image_path,
             }
             product_id = product_collection.insert_one(product_data).inserted_id
@@ -221,6 +225,7 @@ def product():
                 'product_id': str(product_id),
                 'name': name,
                 'price': price,
+                'color': color,
                 'image_path': image_path,
             })
         else:
@@ -247,11 +252,12 @@ def edit_product(product_id):
     if form.validate_on_submit():
         name = form.name.data
         price = float(form.price.data)
+        color = form.color.data
         image_path = form.image.data
 
         # Update the product in MongoDB
         product_collection.update_one({'_id': ObjectId(product_id)},
-                                      {'$set': {'name': name, 'price': price, 'image_path': image_path}})
+                                      {'$set': {'name': name, 'price': price, 'color': color, 'image_path': image_path}})
 
         flash('Product updated successfully!', 'success')
         return redirect(url_for('product'))
@@ -259,6 +265,7 @@ def edit_product(product_id):
     # Pre-fill the form with existing product data
     form.name.data = product['name']
     form.price.data = product['price']
+    form.color.data = product['color']
     form.image.data = product['image_path']
 
     return render_template('admin/edit_product.html', form=form, product=product)
