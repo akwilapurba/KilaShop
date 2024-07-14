@@ -146,12 +146,15 @@ def products():
 def search():
     keyword = request.args.get('keyword', '').lower()
     color = request.args.get('color', '').lower()
+    category = request.args.get('category', '').lower()
 
     query = {}
     if keyword:
         query['name'] = {'$regex': keyword, '$options': 'i'}  # Case-insensitive search
     if color:
         query['color'] = {'$regex': color, '$options': 'i'}  # Case-insensitive search
+    if category:
+        query['name'] = {'$regex': category, '$options': 'i'}  # Case-insensitive search
 
     products = list(product_collection.find(query))
 

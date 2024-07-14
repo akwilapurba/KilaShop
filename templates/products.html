@@ -1,30 +1,63 @@
 {% extends 'ui/theme.html' %}
 {% block content %}
-    <!-- Filter Section Starts -->
-    <aside class="w-full md:w-1/5 pr-4 mt-12">
-        <div class="sticky top-0 py-8 px-4 md:px-16 lg:px-36">
-            <div class="bg-gray-200 rounded-xl p-4">
-                <label for="colorFilter" class="text-gray-800 font-semibold">Filter by Color:</label>
-                <select id="colorFilter" class="ml-2 p-2 border rounded-md w-full mb-4">
-                    <option value="">All</option>
-                    <option value="red">Red</option>
-                    <option value="blue">Blue</option>
-                    <option value="green">Green</option>
-                    <!-- Add more colors as needed -->
-                </select>
+    <aside class="w-full flex flex-wrap justify-center mt-20">
+        <div class="w-full md:w-1/2 pr-4">
+            <div class="sticky top-0 py-8 px-4 md:px-16 lg:px-36">
+                <div class="bg-gray-200 rounded-xl p-4 mb-4">
+                    <label for="colorFilter" class="text-gray-800 font-semibold">Filter by Color:</label>
+                    <select id="colorFilter" class="ml-2 p-2 border rounded-md w-full">
+                        <option value="">All</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                        <option value="beige">Beige</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="black">Black</option>
+                        <option value="white">White</option>
+                        <option value="gray">Gray</option>
+                        <option value="pink">Pink</option>
+                        <option value="brown">Brown</option>
+                        <option value="purple">Purple</option>
+                        <option value="orange">Orange</option>
+                        <!-- Add more colors as needed -->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2 pr-4">
+            <div class="sticky top-0 py-8 px-4 md:px-16 lg:px-36">
+                <div class="bg-gray-200 rounded-xl p-4">
+                    <label for="categoryFilter" class="text-gray-800 font-semibold">Filter by Category:</label>
+                    <select id="categoryFilter" class="ml-2 p-2 border rounded-md w-full">
+                        <option value="">All</option>
+                        <option value="shirt">Shirt</option>
+                        <option value="shoe">Shoes</option>
+                        <option value="jacket">Jacket</option>
+                        <option value="dress">Dress</option>
+                        <option value="vest">Vest</option>
+                        <option value="short">Shorts</option>
+                        <option value="sandal">Sandals</option>
+                        <option value="bag">Bag</option>
+                        <option value="hat">Hat</option>
+                        <option value="watch">Watch</option>
+                        <option value="crop">Crop Top</option>
+                        <option value="pants">Pants</option>
+                        <option value="boots">Boots</option>
+                    </select>                    
+                </div>
             </div>
         </div>
     </aside>
-    <!-- Filter Section Ends -->
 
     <!-- products section starts  -->
-    <section class="py-8 px-4 md:px-16 lg:px-36" id="products">
+    <section class="py-8 -mt-10 px-4 md:px-16 lg:px-36" id="products">
         <h1 class="text-center text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">Latest <span
                 class="text-pink-500">Products</span></h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for product in products %}
                 <div class="product-card bg-gray-200 rounded-xl hover:scale-[1.03] transition-all relative overflow-hidden"
-                     data-color="{{ product.color }}" data-keywords="{{ product.name }}">
+                    data-color="{{ product.color }}" data-category="{{ product.name }}" data-keywords="{{ product.name }}">
                     <div class="p-6">
                         <div class="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4">
                             <i class="fas fa-heart"></i>
@@ -53,20 +86,62 @@
     <!-- products section ends  -->
 
     <script>
-        // Function to handle color filtering
+        // Function to handle color and category filtering
         document.getElementById('colorFilter').addEventListener('change', function () {
-            const selectedColor = this.value.toLowerCase();
-            const productCards = document.querySelectorAll('.product-card');
-
-            productCards.forEach(card => {
-                const cardColor = card.getAttribute('data-color').toLowerCase();
-
-                if (selectedColor === '' || cardColor === selectedColor) {
-                    card.style.display = 'block'; // Show the card
-                } else {
-                    card.style.display = 'none'; // Hide the card
-                }
-            });
+            filterProducts();
         });
+
+        document.getElementById('categoryFilter').addEventListener('change', function () {
+            filterProducts();
+        });
+
+        // Function to handle keyword search
+        document.getElementById('keywordSearch').addEventListener('input', function () {
+            filterProducts();
+        });
+
+        // Main function to filter products based on keyword, color, and category
+        function filterProducts() {
+            const keyword = document.getElementById('keywordSearch').value.toLowerCase();
+            const selectedColor = document.getElementById('colorFilter').value.toLowerCase();
+            const selectedCategory = document.getElementById('categoryFilter').value.toLowerCase();
+
+            fetch(`/search?keyword=${keyword}&color=${selectedColor}&category=${selectedCategory}`)
+                .then(response => response.json())
+                .then(data => {
+                    const productsContainer = document.getElementById('productGrid');
+                    productsContainer.innerHTML = '';
+
+                    data.products.forEach(product => {
+                        const productCard = `
+                            <div class="product-card bg-gray-200 rounded-xl hover:scale-[1.03] transition-all relative overflow-hidden"
+                                data-color="${product.color}" data-category="${product.name}" data-keywords="${product.name}">
+                                <div class="p-6">
+                                    <div class="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <div class="w-2/3 h-[220px] overflow-hidden mx-auto aspect-w-16 aspect-h-8">
+                                        <img src="${product.image_path}" alt="${product._id}_${product.name}"
+                                             class="h-full w-full object-contain"/>
+                                    </div>
+                                </div>
+                                <div class="text-center bg-gray-100 p-6">
+                                    <h3 class="text-lg font-bold text-gray-800">${product.name}</h3>
+                                    <h4 class="text-lg text-gray-800 font-bold mt-6">Rp${product.price} <span
+                                            class="text-gray-400 ml-2 font-medium"
+                                            style="text-decoration: line-through;">Rp${(product.price * 1.20).toFixed(2)}</span>
+                                    </h4>
+                                    <button type="button" onclick="addToCart('${product._id}')"
+                                            class="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-pink-500 text-base text-white font-semibold rounded-xl hover:bg-pink-700 hover:text-gray-200 transition">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Add to cart
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        productsContainer.insertAdjacentHTML('beforeend', productCard);
+                    });
+                });
+        }
     </script>
 {% endblock %}
