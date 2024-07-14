@@ -11,10 +11,21 @@ from wtforms import StringField, DecimalField, SubmitField
 from wtforms.fields import PasswordField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from pymongo import MongoClient
-
+from ultralytics import YOLO
 from dotenv import load_dotenv
+import cv2
 
 load_dotenv()
+
+
+class config:
+    rev_ai_access_token = os.getenv('REV_AI_ACCESS_TOKEN')
+    midtrans_server_key = os.getenv('MIDTRANS_SERVER_KEY')
+    midtrans_client_key = os.getenv('MIDTRANS_CLIENT_KEY')
+    mongo_uri = os.getenv('MONGO_URI')
+    mongo_db_name = os.getenv('MONGO_DB_NAME')
+    secret_key = os.getenv('SECRET_KEY')
+
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = os.getenv('SECRET_KEY')
@@ -34,6 +45,10 @@ snap = midtransclient.Snap(
 
 # Bcrypt
 bcrypt = Bcrypt(app)
+
+# Model
+model = './helpers/model/best.pt'
+detector = YOLO(model)
 
 
 class RegistrationForm(FlaskForm):
@@ -142,6 +157,7 @@ def products():
     products = list(product_collection.find())  # Fetch all products from MongoDB
     return render_template('products.html', products=products)
 
+
 @app.route('/search')
 def search():
     keyword = request.args.get('keyword', '').lower()
@@ -169,6 +185,7 @@ def search():
         })
 
     return jsonify({'products': result})
+
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -285,7 +302,8 @@ def edit_product(product_id):
 
         # Update the product in MongoDB
         product_collection.update_one({'_id': ObjectId(product_id)},
-                                      {'$set': {'name': name, 'price': price, 'color': color, 'image_path': image_path}})
+                                      {'$set': {'name': name, 'price': price, 'color': color,
+                                                'image_path': image_path}})
 
         flash('Product updated successfully!', 'success')
         return redirect(url_for('product'))
@@ -387,6 +405,9 @@ def transaction_status():
     )
 
     return jsonify({'message': 'Transaction status updated successfully'})
+
+
+# End Route
 
 
 if __name__ == '__main__':

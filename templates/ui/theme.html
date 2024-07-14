@@ -41,37 +41,6 @@
             }
         });
 
-        // Voice Search
-        document.getElementById('voice-search-btn').addEventListener('click', () => {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.onstart = () => {
-                console.log('Voice recognition started. Try speaking into the microphone.');
-            };
-            recognition.onspeechend = () => {
-                console.log('You were quiet for a while so voice recognition turned itself off.');
-            };
-            recognition.onerror = (event) => {
-                console.error('Error occurred in recognition: ' + event.error);
-            };
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                console.log('Transcript:', transcript);
-                // You can set the input value to the transcript and trigger a search
-                document.querySelector('input[type="text"]').value = transcript;
-            };
-            recognition.start();
-        });
-
-        // Image Search Placeholder Function
-        document.getElementById('image-search-input').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                console.log('File selected:', file);
-                // Placeholder for actual image search function
-                alert('Image search feature is under development.');
-            }
-        });
-
         // Smooth Scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

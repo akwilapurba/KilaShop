@@ -9,12 +9,21 @@
         <a href="#contact" class="text-lg text-gray-600 hover:text-pink-600 transition">Contact</a>
     </nav>
     <!-- Search Bar with Voice and Image Search -->
-    <div class="flex items-center space-x-4">
-        <input type="text" id="keywordSearch" placeholder="Search..." class="p-2 border rounded">
-        <button id="voice-search-btn" class="p-2 text-gray-700 hover:text-pink-600 transition"><i class="fas fa-microphone"></i></button>
-        <input type="file" id="image-search-input" class="hidden">
-        <label for="image-search-input" class="p-2 text-gray-700 hover:text-pink-600 transition cursor-pointer"><i class="fas fa-camera"></i></label>
+    <div class="flex items-center w-[450px]">
+        <div class="relative flex items-center w-full">
+            <input type="text" id="keywordSearch" placeholder="Search..."
+                   class="w-full p-2 pl-4 pr-20 border rounded-xl">
+            <button id="voice-search-btn" class="absolute right-10 text-gray-700 hover:text-pink-600 transition">
+                <i class="fas fa-microphone" onclick="startSpeechRecognition()"></i>
+            </button>
+
+            <label id="camera-icon"
+                   class="absolute right-2 text-gray-700 hover:text-pink-600 transition cursor-pointer">
+                <i class="fas fa-camera"></i>
+            </label>
+        </div>
     </div>
+
     <div class="hidden lg:flex space-x-4 text-2xl text-gray-700">
         {% if session.get('username') %}
             <a href="/logout" class="text-lg text-gray-600 hover:text-pink-600 transition">Logout</a>
@@ -26,6 +35,20 @@
     </div>
 </header>
 <!-- header section ends -->
+
+<!-- Image Search Modal -->
+<div id="imageSearchModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4">Search by Image</h2>
+        <input type="file" id="imageFileInput" class="mb-4">
+        <input type="text" id="imageUrlInput" placeholder="Or Enter image URL..."
+               class="w-full mb-4 p-2 border rounded">
+        <div class="flex justify-end space-x-4">
+            <button id="imageSearchCancel" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+            <button id="imageSearchSubmit" class="bg-pink-600 text-white px-4 py-2 rounded">Search</button>
+        </div>
+    </div>
+</div>
 
 <!-- Mobile Menu -->
 <div class="lg:hidden fixed top-0 left-0 right-0 bg-white py-4 px-6 md:px-12 flex flex-col items-center justify-center shadow-md z-50 hidden"
@@ -58,5 +81,77 @@
                     }
                 });
             });
+    }
+
+    // Show modal on camera icon click
+    document.getElementById('camera-icon').addEventListener('click', function () {
+        document.getElementById('imageSearchModal').classList.remove('hidden');
+    });
+
+    // Hide modal on cancel button click
+    document.getElementById('imageSearchCancel').addEventListener('click', function () {
+        document.getElementById('imageSearchModal').classList.add('hidden');
+    });
+
+    // Handle image search submission
+    document.getElementById('imageSearchSubmit').addEventListener('click', function () {
+        const fileInput = document.getElementById('imageFileInput');
+        const urlInput = document.getElementById('imageUrlInput');
+        const file = fileInput.files[0];
+        const imageUrl = urlInput.value.trim();
+
+        if (file) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            fetch('/search-by-image', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the search results
+                    console.log(data);
+                    document.getElementById('imageSearchModal').classList.add('hidden');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        } else if (imageUrl) {
+            fetch(`/search-by-image-url?url=${encodeURIComponent(imageUrl)}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the search results
+                    console.log(data);
+                    document.getElementById('imageSearchModal').classList.add('hidden');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        } else {
+            alert('Please upload an image or enter an image URL.');
+        }
+    });
+
+    function startSpeechRecognition() {
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.onresult = function(event) {
+            console.log(event.results);
+
+            // Punctuation & remove dot at the end
+            const transcript = event
+                .results[0][0]
+                .transcript
+                .toLowerCase()
+                .replace(/[^a-zA-Z0-9 ]/g, '')
+                .replace(/\.$/, '');
+
+            console.log(transcript)
+
+            document.getElementById('keywordSearch').value = transcript;
+            searchProducts();
+        };
+        recognition.start();
     }
 </script>
