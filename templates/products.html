@@ -1,116 +1,44 @@
-{% extends 'ui/base.html' %}
+{% extends 'ui/theme.html' %}
 {% block content %}
-    <div class="bg-white">
-        <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-            <div class="flex items-center justify-between space-x-4">
-                <h2 class="text-lg font-medium text-gray-900">Customers also viewed</h2>
-                <a href="#" class="whitespace-nowrap text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                    View all
-                    <span aria-hidden="true"> &rarr;</span>
-                </a>
-            </div>
-            <div class="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-4">
-                <div class="group relative">
-                    <div class="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 shadow-lg transition duration-300 transform group-hover:scale-105 group-hover:shadow-xl">
-                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-01.jpg"
-                             alt="Payment application dashboard screenshot with transaction table, financial highlights, and main clients on colorful purple background."
-                             class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
-                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300"
-                             aria-hidden="true">
-                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
-                                View Product
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
-                        <h3>
-                            <a href="#" class="hover:text-indigo-600">
-                                <span aria-hidden="true" class="absolute inset-0"></span>
-                                Fusion
-                            </a>
-                        </h3>
-                        <p>$49</p>
-                    </div>
-                    <p class="mt-1 text-sm text-gray-500">UI Kit</p>
-                </div>
+    <!-- products section starts  -->
+    <section class="py-8 px-4 md:px-16 lg:px-36" id="products">
+        <h1 class="text-center text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">Latest <span
+                class="text-pink-500">Products</span></h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for product in products %}
+                <div class="bg-gray-200 rounded-xl hover:scale-[1.03] transition-all relative overflow-hidden">
 
-                <!-- More products... Repeat similar blocks for more products as needed -->
-                <!-- Example of additional products -->
-                <div class="group relative">
-                    <div class="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 shadow-lg transition duration-300 transform group-hover:scale-105 group-hover:shadow-xl">
-                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-02.jpg"
-                             alt="Detailed image of a sleek modern lamp with adjustable arm and base."
-                             class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
-                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300"
-                             aria-hidden="true">
-                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
-                                View Product
-                            </div>
+                    <div class="p-6">
+                        {# Like Button #}
+                        <div
+                                class="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4">
+                            <i class="fas fa-heart"></i>
                         </div>
-                    </div>
-                    <div class="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
-                        <h3>
-                            <a href="#" class="hover:text-indigo-600">
-                                <span aria-hidden="true" class="absolute inset-0"></span>
-                                Modern Lamp
-                            </a>
-                        </h3>
-                        <p>$79</p>
-                    </div>
-                    <p class="mt-1 text-sm text-gray-500">Home Decor</p>
-                </div>
 
-                <div class="group relative">
-                    <div class="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 shadow-lg transition duration-300 transform group-hover:scale-105 group-hover:shadow-xl">
-                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-03.jpg"
-                             alt="Minimalist watch with sleek black band and minimalist white face."
-                             class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
-                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300"
-                             aria-hidden="true">
-                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
-                                View Product
-                            </div>
+                        {# Image #}
+                        <div class="w-2/3 h-[220px] overflow-hidden mx-auto aspect-w-16 aspect-h-8">
+                            <img src="{{ product.image_path }}" alt="{{ product._id }}_{{ product.name }}"
+                                 class="h-full w-full object-contain"/>
                         </div>
                     </div>
-                    <div class="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
-                        <h3>
-                            <a href="#" class="hover:text-indigo-600">
-                                <span aria-hidden="true" class="absolute inset-0"></span>
-                                Minimalist Watch
-                            </a>
-                        </h3>
-                        <p>$99</p>
-                    </div>
-                    <p class="mt-1 text-sm text-gray-500">Accessories</p>
-                </div>
 
-                <div class="group relative">
-                    <div class="aspect-h-3 aspect-w-4 overflow-hidden rounded-lg bg-gray-100 shadow-lg transition duration-300 transform group-hover:scale-105 group-hover:shadow-xl">
-                        <img src="https://tailwindui.com/img/ecommerce-images/product-page-05-related-product-04.jpg"
-                             alt="Elegant chair with wooden frame and dark fabric cushion."
-                             class="h-full w-full object-cover object-center group-hover:opacity-75 transition duration-300">
-                        <div class="flex items-end p-4 opacity-0 group-hover:opacity-100 transition duration-300"
-                             aria-hidden="true">
-                            <div class="w-full rounded-md bg-white bg-opacity-75 px-4 py-2 text-center text-sm font-medium text-gray-900 backdrop-blur backdrop-filter">
-                                View Product
-                            </div>
-                        </div>
+                    {# Product Details #}
+                    <div class="text-center bg-gray-100 p-6">
+                        <h3 class="text-lg font-bold text-gray-800">{{ product.name }}</h3>
+                        <h4 class="text-lg text-gray-800 font-bold mt-6">{{ "Rp{:,.2f}".format(product.price) }} <span
+                                class="text-gray-400 ml-2 font-medium"
+                                style="text-decoration: line-through;">{{ "Rp{:,.2f}".format(product.price*1.20) }}</span>
+                        </h4>
+
+                        <button type="button" onclick="addToCart('{{ product._id }}')"
+                                class="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-pink-500 text-base text-white font-semibold rounded-xl hover:bg-pink-700 hover:text-gray-200 transition">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to cart
+                        </button>
                     </div>
-                    <div class="mt-4 flex items-center justify-between space-x-8 text-base font-medium text-gray-900">
-                        <h3>
-                            <a href="#" class="hover:text-indigo-600">
-                                <span aria-hidden="true" class="absolute inset-0"></span>
-                                Elegant Chair
-                            </a>
-                        </h3>
-                        <p>$129</p>
-                    </div>
-                    <p class="mt-1 text-sm text-gray-500">Furniture</p>
                 </div>
-            </div>
+            {% endfor %}
         </div>
-    </div>
-
-    <!-- FontAwesome for icons -->
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    </section>
+    <!-- products section ends -->
 {% endblock %}

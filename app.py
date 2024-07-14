@@ -139,8 +139,8 @@ def logout():
 
 @app.route('/products')
 def products():
-    return render_template('products.html')
-
+    products = list(product_collection.find())  # Fetch all products from MongoDB
+    return render_template('products.html', products=products)
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
