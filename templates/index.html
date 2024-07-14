@@ -114,17 +114,17 @@
                 class="text-pink-500">Us</span></h1>
 
         <div class="container mx-auto flex flex-wrap justify-between">
-            <form class="w-full lg:w-1/2 bg-white shadow-md rounded-lg p-8 mb-8 lg:mb-0">
-                <input type="text" placeholder="Name"
-                       class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
-                <input type="email" placeholder="Email"
-                       class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
-                <input type="number" placeholder="Phone Number"
-                       class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
-                <textarea placeholder="Message"
-                          class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600 h-40 resize-none"></textarea>
+            <form action="/send_message" method="POST" class="w-full lg:w-1/2 bg-white shadow-md rounded-lg p-8 mb-8 lg:mb-0">
+                <input type="text" name="name" placeholder="Name"
+                    class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
+                <input type="email" name="email" placeholder="Email"
+                    class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
+                <input type="tel" name="phone" placeholder="Phone Number"
+                    class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600">
+                <textarea name="message" placeholder="Message"
+                        class="w-full p-4 mb-4 border rounded-lg text-lg text-gray-700 focus:border-pink-600 h-40 resize-none"></textarea>
                 <input type="submit" value="Send Message"
-                       class="w-full bg-gray-800 text-white text-lg py-2 px-8 rounded-full hover:bg-pink-600 transition">
+                    class="w-full bg-gray-800 text-white text-lg py-2 px-8 rounded-full hover:bg-pink-600 transition">
             </form>
             <div class="w-full lg:w-1/2 lg:pl-8 lg:py-8 text-center lg:text-left">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.013292073073!2d107.1463663147696!3d-6.264000995468073!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f2b4b4b4b4b5%3A0x1b1b1b1b1b1b1b1b!2sKilaShop!5e0!3m2!1sid!2sid!4v1633363660734!5m2!1sid!2sid"
@@ -133,5 +133,6 @@
         </div>
     </section>
     <!-- contact section ends -->
+
 
 {% endblock %}

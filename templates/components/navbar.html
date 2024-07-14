@@ -45,31 +45,18 @@
         fetch(`/search?keyword=${keyword}&color=${color}`)
             .then(response => response.json())
             .then(data => {
-                const productsSection = document.getElementById('products');
-                if (productsSection) {
-                    productsSection.innerHTML = '';
-                    data.products.forEach(product => {
-                        productsSection.innerHTML += `
-                        <div class="bg-gray-200 rounded-xl hover:scale-[1.03] transition-all relative overflow-hidden product-card" data-color="${product.color}" data-keywords="${product.name}">
-                            <div class="p-6">
-                                <div class="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4">
-                                    <i class="fas fa-heart"></i>
-                                </div>
-                                <div class="w-2/3 h-[220px] overflow-hidden mx-auto aspect-w-16 aspect-h-8">
-                                    <img src="${product.image_path}" alt="${product._id}_${product.name}" class="h-full w-full object-contain"/>
-                                </div>
-                            </div>
-                            <div class="text-center bg-gray-100 p-6">
-                                <h3 class="text-lg font-bold text-gray-800">${product.name}</h3>
-                                <h4 class="text-lg text-gray-800 font-bold mt-6">Rp${product.price.toFixed(2)} <span class="text-gray-400 ml-2 font-medium" style="text-decoration: line-through;">Rp${(product.price * 1.20).toFixed(2)}</span></h4>
-                                <button type="button" onclick="addToCart('${product._id}')" class="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-pink-500 text-base text-white font-semibold rounded-xl hover:bg-pink-700 hover:text-gray-200 transition">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    Add to cart
-                                </button>
-                            </div>
-                        </div>`;
-                    });
-                }
+                const productCards = document.querySelectorAll('.product-card');
+
+                productCards.forEach(card => {
+                    const cardKeywords = card.getAttribute('data-keywords').toLowerCase();
+                    const cardColor = card.getAttribute('data-color').toLowerCase();
+
+                    if ((keyword === '' || cardKeywords.includes(keyword)) && (color === '' || cardColor === color)) {
+                        card.style.display = 'block'; // Show the card
+                    } else {
+                        card.style.display = 'none'; // Hide the card
+                    }
+                });
             });
     }
 </script>
