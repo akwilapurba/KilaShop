@@ -1,3 +1,4 @@
+<!-- components/navbar.html -->
 <header class="fixed top-0 left-0 right-0 bg-white py-4 px-6 md:px-12 flex items-center justify-between shadow-md z-50">
     <input type="checkbox" id="toggler" class="hidden">
     <label for="toggler" class="fas fa-bars text-3xl text-gray-700 cursor-pointer lg:hidden"></label>
@@ -9,14 +10,11 @@
     </nav>
     <!-- Search Bar with Voice and Image Search -->
     <div class="flex items-center space-x-4">
-        <input type="text" placeholder="Search..." class="p-2 border rounded">
-        <button id="voice-search-btn" class="p-2 text-gray-700 hover:text-pink-600 transition"><i
-                class="fas fa-microphone"></i></button>
+        <input type="text" id="keywordSearch" placeholder="Search..." class="p-2 border rounded">
+        <button id="voice-search-btn" class="p-2 text-gray-700 hover:text-pink-600 transition"><i class="fas fa-microphone"></i></button>
         <input type="file" id="image-search-input" class="hidden">
-        <label for="image-search-input" class="p-2 text-gray-700 hover:text-pink-600 transition cursor-pointer"><i
-                class="fas fa-camera"></i></label>
+        <label for="image-search-input" class="p-2 text-gray-700 hover:text-pink-600 transition cursor-pointer"><i class="fas fa-camera"></i></label>
     </div>
-
     <div class="hidden lg:flex space-x-4 text-2xl text-gray-700">
         {% if session.get('username') %}
             <a href="/logout" class="text-lg text-gray-600 hover:text-pink-600 transition">Logout</a>
@@ -24,7 +22,6 @@
             <a href="/login" class="text-lg text-gray-600 hover:text-pink-600 transition">Login</a>
             <a href="/register" class="text-lg text-gray-600 hover:text-pink-600 transition">Register</a>
         {% endif %}
-
         <a href="/cart" class="fas fa-shopping-cart hover:text-pink-600 transition"></a>
     </div>
 </header>
@@ -37,3 +34,42 @@
     <a href="#products" class="text-lg text-gray-600 hover:text-pink-600 transition mb-4">Products</a>
     <a href="#contact" class="text-lg text-gray-600 hover:text-pink-600 transition mb-4">Contact</a>
 </div>
+
+<script>
+    document.getElementById('keywordSearch').addEventListener('input', searchProducts);
+
+    function searchProducts() {
+        const keyword = document.getElementById('keywordSearch').value.toLowerCase();
+        const color = document.getElementById('colorFilter') ? document.getElementById('colorFilter').value.toLowerCase() : '';
+
+        fetch(`/search?keyword=${keyword}&color=${color}`)
+            .then(response => response.json())
+            .then(data => {
+                const productsSection = document.getElementById('products');
+                if (productsSection) {
+                    productsSection.innerHTML = '';
+                    data.products.forEach(product => {
+                        productsSection.innerHTML += `
+                        <div class="bg-gray-200 rounded-xl hover:scale-[1.03] transition-all relative overflow-hidden product-card" data-color="${product.color}" data-keywords="${product.name}">
+                            <div class="p-6">
+                                <div class="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="w-2/3 h-[220px] overflow-hidden mx-auto aspect-w-16 aspect-h-8">
+                                    <img src="${product.image_path}" alt="${product._id}_${product.name}" class="h-full w-full object-contain"/>
+                                </div>
+                            </div>
+                            <div class="text-center bg-gray-100 p-6">
+                                <h3 class="text-lg font-bold text-gray-800">${product.name}</h3>
+                                <h4 class="text-lg text-gray-800 font-bold mt-6">Rp${product.price.toFixed(2)} <span class="text-gray-400 ml-2 font-medium" style="text-decoration: line-through;">Rp${(product.price * 1.20).toFixed(2)}</span></h4>
+                                <button type="button" onclick="addToCart('${product._id}')" class="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-pink-500 text-base text-white font-semibold rounded-xl hover:bg-pink-700 hover:text-gray-200 transition">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Add to cart
+                                </button>
+                            </div>
+                        </div>`;
+                    });
+                }
+            });
+    }
+</script>

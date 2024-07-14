@@ -142,6 +142,31 @@ def products():
     products = list(product_collection.find())  # Fetch all products from MongoDB
     return render_template('products.html', products=products)
 
+@app.route('/search')
+def search():
+    keyword = request.args.get('keyword', '').lower()
+    color = request.args.get('color', '').lower()
+
+    query = {}
+    if keyword:
+        query['name'] = {'$regex': keyword, '$options': 'i'}  # Case-insensitive search
+    if color:
+        query['color'] = {'$regex': color, '$options': 'i'}  # Case-insensitive search
+
+    products = list(product_collection.find(query))
+
+    result = []
+    for product in products:
+        result.append({
+            '_id': str(product['_id']),
+            'name': product['name'],
+            'price': product['price'],
+            'color': product['color'],
+            'image_path': product['image_path']
+        })
+
+    return jsonify({'products': result})
+
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     # Get product ID from the request json data
