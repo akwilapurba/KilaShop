@@ -1,91 +1,78 @@
 {% extends 'ui/admin/base.html' %}
 
 {% block content %}
-    <div class="flex-1 p-10">
-        <div id="products-section" class="flex-1 p-10">
-            <h1 class="text-3xl font-semibold text-gray-800">Manage Products</h1>
-            <div class="mt-6">
-                <p class="text-gray-600">Add, edit, and delete products from your inventory.</p>
-                <div class="mt-6">
-                    <button id="add-product-btn" class="bg-pink-600 text-white py-2 px-4 rounded">Add Product</button>
-                    <table class="mt-4 min-w-full bg-white table-auto overflow-x-auto">
-                        <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b text-center">Product Image</th>
-                            <th class="py-2 px-4 border-b text-center">Product Name</th>
-                            <th class="py-2 px-4 border-b text-center">Price</th>
-                            <th class="py-2 px-4 border-b text-center">Color</th>
-                            <th class="py-2 px-4 border-b text-center">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody id="product-table-body">
-                        {% for product in products %}
-                            <tr>
-                                <td class="py-2 px-4 border-b text-center">
-                                    <img src="{{ product.image_path }}" alt="{{ product.name }}"
-                                         class="h-16 w-16 object-cover mx-auto">
-                                </td>
-                                <td class="py-2 px-4 border-b text-center">{{ product.name }}</td>
-                                <td class="py-2 px-4 border-b text-center"
-                                    id="price-{{ product._id }}">{{ "Rp{:,.2f}".format(product.price) }}</td>
-                                <td class="py-2 px-4 border-b text-center">{{ product.color }}</td>
-                                <td class="py-2 px-4 border-b text-center">
-                                    <button class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 focus:outline-none"
-                                            onclick="editProduct('{{ product._id }}')">Edit
-                                    </button>
-
-                                    <button class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none"
-                                            onclick="deleteProduct('{{ product._id }}')">Delete
-                                    </button>
-                                </td>
-
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Modal for adding a new product -->
-        <div id="add-product-modal"
-             class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-            <div class="bg-white p-6 rounded shadow-lg">
-                <h2 class="text-2xl font-semibold mb-4">Add New Product</h2>
-                <form method="POST" action="{{ url_for('product') }}" enctype="multipart/form-data"
-                      id="add-product-form">
-                    {{ form.hidden_tag() }}
-                    <div class="mb-4">
-                        {{ form.name.label(class="block text-gray-700") }}
-                        {{ form.name(class="w-full px-4 py-2 border rounded", required=True) }}
-                    </div>
-                    <div class="mb-4">
-                        {{ form.price.label(class="block text-gray-700") }}
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-700">Rp</span>
-                            {{ form.price(class="pl-8 w-full px-4 py-2 border rounded", required=True) }}
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        {{ form.color.label(class="block text-gray-700") }}
-                        {{ form.color(class="w-full px-4 py-2 border rounded", required=True) }}
-                    </div>
-                    <div class="mb-4">
-                        {{ form.image.label(class="block text-gray-700") }}
-                        {{ form.image(class="w-full px-4 py-2 border rounded", required=True, accept="image/*") }}
-                    </div>
-                    <div class="flex justify-end">
-                        <button type="button" id="cancel-btn" class="bg-gray-500 text-white py-2 px-4 rounded mr-2">
-                            Cancel
-                        </button>
-                        <button type="submit" class="bg-pink-600 text-white py-2 px-4 rounded">Add Product</button>
-                    </div>
-                </form>
-            </div>
+<div class="flex-1 p-10">
+    <div id="products-section" class="flex-1 p-10">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-4">Manage Products</h1>
+        <p class="text-gray-600 mb-6">Add, edit, and delete products from your inventory.</p>
+        <button id="add-product-btn" class="bg-pink-600 text-white py-2 px-4 rounded mb-6">Add Product</button>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+                <thead class="bg-pink-500 text-white">
+                    <tr>
+                        <th class="py-3 px-6 text-center">Product Image</th>
+                        <th class="py-3 px-6 text-center">Product Name</th>
+                        <th class="py-3 px-6 text-center">Price</th>
+                        <th class="py-3 px-6 text-center">Color</th>
+                        <th class="py-3 px-6 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700">
+                    {% for product in products %}
+                    <tr class="border-b">
+                        <td class="py-3 px-6 text-center">
+                            <img src="{{ product.image_path }}" alt="{{ product.name }}" class="h-16 w-16 object-cover mx-auto">
+                        </td>
+                        <td class="py-3 px-6 text-center">{{ product.name }}</td>
+                        <td class="py-3 px-6 text-center">{{ "Rp{:,.2f}".format(product.price) }}</td>
+                        <td class="py-3 px-6 text-center">{{ product.color }}</td>
+                        <td class="py-3 px-6 text-center">
+                            <button class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 focus:outline-none" onclick="editProduct('{{ product._id }}')">Edit</button>
+                            <button class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none"
+                            onclick="deleteProduct('{{ product._id }}')">Delete</button>        
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <!-- Modal for adding a new product -->
+    <div id="add-product-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded shadow-lg">
+            <h2 class="text-2xl font-semibold mb-4">Add New Product</h2>
+            <form method="POST" action="{{ url_for('product') }}" enctype="multipart/form-data" id="add-product-form">
+                {{ form.hidden_tag() }}
+                <div class="mb-4">
+                    {{ form.name.label(class="block text-gray-700") }}
+                    {{ form.name(class="w-full px-4 py-2 border rounded", required=True) }}
+                </div>
+                <div class="mb-4">
+                    {{ form.price.label(class="block text-gray-700") }}
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-700">Rp</span>
+                        {{ form.price(class="pl-8 w-full px-4 py-2 border rounded", required=True) }}
+                    </div>
+                </div>
+                <div class="mb-4">
+                    {{ form.color.label(class="block text-gray-700") }}
+                    {{ form.color(class="w-full px-4 py-2 border rounded", required=True) }}
+                </div>
+                <div class="mb-4">
+                    {{ form.image.label(class="block text-gray-700") }}
+                    {{ form.image(class="w-full px-4 py-2 border rounded", required=True, accept="image/*") }}
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="cancel-btn" class="bg-gray-500 text-white py-2 px-4 rounded mr-2">Cancel</button>
+                    <button type="submit" class="bg-pink-600 text-white py-2 px-4 rounded">Add Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
+
 
 {% block scripts %}
     <script>
@@ -146,17 +133,13 @@
         }
 
         // Function to handle deleting a product
-        function deleteProduct(productId) {
+        async function deleteProduct(productId) {
             if (confirm('Are you sure you want to delete this product?')) {
-                fetch(`/admin/product/delete/${productId}`, {
-                    method: 'DELETE'
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to delete product');
-                        }
-                        // Optional: Handle success message or update UI
-                        console.log('Product deleted successfully');
+                try {
+                    const response = await fetch(`/admin/product/delete/${productId}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
                         // Notify user with SweetAlert
                         Swal.fire({
                             icon: 'success',
@@ -165,17 +148,20 @@
                             showConfirmButton: false,
                             timer: 1500
                         });
-                        fetchProductList(); // Define this function to fetch and update product list
-                    })
-                    .catch(error => {
-                        console.error('Error deleting product:', error.message);
-                        // Optional: Display error message to the user
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Failed to delete product',
-                        });
+                        // Remove the deleted product from the UI
+                        document.querySelector(`button[onclick="deleteProduct('${productId}')"]`).closest('tr').remove();
+                    } else {
+                        throw new Error('Failed to delete product');
+                    }
+                } catch (error) {
+                    console.error('Error deleting product:', error.message);
+                    // Display error message to the user
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Failed to delete product',
                     });
+                }
             }
         }
 
@@ -195,5 +181,3 @@
         }
     </script>
 {% endblock %}
-
-

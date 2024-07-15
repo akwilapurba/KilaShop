@@ -153,6 +153,7 @@ def logout():
 
 
 @app.route('/products')
+@login_required
 def products():
     products = list(product_collection.find())  # Fetch all products from MongoDB
     return render_template('products.html', products=products)
@@ -185,7 +186,6 @@ def search():
         })
 
     return jsonify({'products': result})
-
 
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
@@ -226,6 +226,7 @@ def remove_from_cart():
 
 
 @app.route('/cart')
+@login_required
 def view_cart():
     cart_items = session.get('cart', [])
 
@@ -240,12 +241,18 @@ def empty_cart():
 
 
 @app.route('/admin')
+@login_required
 def admin():
-    return render_template('admin/dashboard.html', current_page='dashboard')
+    total_products = product_collection.count_documents({})
+    total_orders = transaction_collection.count_documents({})
+    total_amount = sum(transaction['total_amount'] for transaction in transaction_collection.find({'status': 'capture'}))
+
+    return render_template('admin/dashboard.html', total_products=total_products, total_orders=total_orders, total_amount=total_amount, current_page='dashboard')
 
 
 # Route for adding a product
 @app.route('/admin/product', methods=['GET', 'POST'])
+@login_required
 def product():
     if request.method == 'POST':
         form = ProductForm(request.form)
@@ -333,6 +340,7 @@ def delete_product(product_id):
 
 
 @app.route('/checkout', methods=['POST'])
+@login_required
 def checkout():
     cart_items = session.get('cart', [])
     if not cart_items:
@@ -389,6 +397,7 @@ def checkout():
 
 
 @app.route('/transaction_status', methods=['POST'])
+@login_required
 def transaction_status():
     data = request.json
     order_id = data.get('order_id')
@@ -407,8 +416,16 @@ def transaction_status():
     return jsonify({'message': 'Transaction status updated successfully'})
 
 
-# End Route
+@app.route('/admin/orders')
+@login_required
+def orders():
+    transactions = list(transaction_collection.find())
+    user_map = {str(user['_id']): user['username'] for user in user_collection.find()}
 
+    for transaction in transactions:
+        transaction['username'] = user_map.get(str(transaction['user_id']), 'Unknown User')    
+    
+    return render_template('admin/orders.html', transactions=transactions, current_page='orders')
 
 if __name__ == '__main__':
     app.run(debug=True)
