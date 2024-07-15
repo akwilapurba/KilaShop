@@ -104,26 +104,28 @@
             const formData = new FormData();
             formData.append('image', file);
 
-            fetch('/search-by-image', {
+            fetch('/imageSearch', {
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.json())
+                .then(response => response.text())
                 .then(data => {
-                    // Handle the search results
-                    console.log(data);
-                    document.getElementById('imageSearchModal').classList.add('hidden');
+                    window.location.href = `/search-results?results=${encodeURIComponent(data)}`;
                 })
                 .catch(error => {
                     console.error('Error:', error);
                 });
         } else if (imageUrl) {
-            fetch(`/search-by-image-url?url=${encodeURIComponent(imageUrl)}`)
-                .then(response => response.json())
+            const formData = new FormData();
+            formData.append('imageUrl', imageUrl);
+
+            fetch('/imageSearch', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
                 .then(data => {
-                    // Handle the search results
-                    console.log(data);
-                    document.getElementById('imageSearchModal').classList.add('hidden');
+                    window.location.href = `/search-results?results=${encodeURIComponent(data)}`;
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -133,42 +135,21 @@
         }
     });
 
+
     function startSpeechRecognition() {
         const recognition = new webkitSpeechRecognition();
         recognition.lang = 'en-US';
-        recognition.onresult = function(event) {
+        recognition.onresult = function (event) {
             const transcript = event
                 .results[0][0]
                 .transcript
                 .toLowerCase()
                 .replace(/[^a-zA-Z0-9 ]/g, '')
                 .replace(/\.$/, '');
-    
+
             document.getElementById('keywordSearch').value = transcript;
             searchProducts();  // Trigger the search with the recognized speech
         };
         recognition.start();
     }
-    
-    function searchProducts() {
-        const keyword = document.getElementById('keywordSearch').value.toLowerCase();
-        const color = document.getElementById('colorFilter') ? document.getElementById('colorFilter').value.toLowerCase() : '';
-    
-        fetch(`/search?keyword=${keyword}&color=${color}`)
-            .then(response => response.json())
-            .then(data => {
-                const productCards = document.querySelectorAll('.product-card');
-    
-                productCards.forEach(card => {
-                    const cardKeywords = card.getAttribute('data-keywords').toLowerCase();
-                    const cardColor = card.getAttribute('data-color').toLowerCase();
-    
-                    if ((keyword === '' || cardKeywords.includes(keyword)) && (color === '' || cardColor === color)) {
-                        card.style.display = 'block'; // Show the card
-                    } else {
-                        card.style.display = 'none'; // Hide the card
-                    }
-                });
-            });
-    }    
 </script>

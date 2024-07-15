@@ -1,0 +1,61 @@
+{% extends 'ui/theme.html' %}
+
+{% block content %}
+    <div class="container mx-auto mt-24">
+        <h1 class="text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">Image Search <span
+                class="text-pink-500">Results for '{{ label }}'</span></h1>
+        <div id="resultsContainer" class="grid grid-cols-1 mb-10 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for product in products %}
+                <div class="product-card bg-gray-200 rounded-xl hover:scale-[1.03] transition-all relative overflow-hidden"
+                     data-color="{{ product.color }}" data-category="{{ product.name }}"
+                     data-keywords="{{ product.name }}">
+                    <div class="p-6">
+                        <div class="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="w-2/3 h-[220px] overflow-hidden mx-auto aspect-w-16 aspect-h-8">
+                            <img src="{{ product.image_path }}" alt="{{ product._id }}_{{ product.name }}"
+                                 class="h-full w-full object-contain"/>
+                        </div>
+                    </div>
+                    <div class="text-center bg-gray-100 p-6">
+                        <h3 class="text-lg font-bold text-gray-800">{{ product.name }}</h3>
+                        <h4 class="text-lg text-gray-800 font-bold mt-6">{{ "Rp{:,.2f}".format(product.price) }}
+                            <span
+                                    class="text-gray-400 ml-2 font-medium"
+                                    style="text-decoration: line-through;">Rp{{ (product.price * 1.20) | round(2) }}</span>
+                        </h4>
+                        <button type="button" onclick="addToCart('{{ product._id }}')"
+                                class="w-full flex items-center justify-center gap-3 mt-6 px-6 py-3 bg-pink-500 text-base text-white font-semibold rounded-xl hover:bg-pink-700 hover:text-gray-200 transition">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to cart
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <section class="py-8 -mt-10 px-4 md:px-16 lg:px-36 z-10" id="products">
+            <h1 class="text-center text-4xl font-bold text-gray-800 py-2 my-8 bg-pink-100">Latest <span
+                    class="text-pink-500">Products</span></h1>
+
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the results from the URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const resultsParam = urlParams.get('results');
+
+            // Update the search input field in the navbar
+            const keywordSearchInput = document.getElementById('keywordSearch');
+            if (resultsParam) {
+                 // Assuming predictions is an array
+                keywordSearchInput.placeholder = 'Image results for ' + resultsParam;
+            } else {
+                keywordSearchInput.placeholder = 'No predictions found';
+            }
+        });
+    </script>
+{% endblock %}

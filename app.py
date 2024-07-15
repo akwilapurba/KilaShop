@@ -3,6 +3,7 @@ import time
 from functools import wraps
 
 import midtransclient
+import requests
 from bson import ObjectId
 from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
 from flask_bcrypt import Bcrypt
@@ -187,6 +188,88 @@ def search():
 
     return jsonify({'products': result})
 
+
+@app.route('/imageSearch', methods=['POST'])
+def image_search():
+    predictions = []
+    if 'image' in request.files:
+        file = request.files['image']
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        image_path = os.path.join('static/uploads', file.filename)
+        file.save(image_path)
+
+        try:
+            # Perform image recognition using the YOLO model
+            img = cv2.imread(image_path)
+            results = detector.predict(img)
+
+            for result in results:
+                for box in result.boxes:
+                    label = result.names[int(box.cls[0])]
+                    confidence = box.conf[0]
+                    x_min, y_min, x_max, y_max = box.xyxy[0].cpu().numpy()
+                    predictions.append({
+                        'label': label,
+                        'confidence': float(confidence),
+                        'bbox': [int(x_min), int(y_min), int(x_max), int(y_max)]
+                    })
+
+                    print(predictions)
+
+        except Exception as e:
+            return jsonify({'error': 'Failed to process image', 'message': str(e)}), 500
+
+    elif 'imageUrl' in request.form:
+        image_url = request.form.get('imageUrl')
+        try:
+            response = requests.get(image_url)
+            image_path = os.path.join('static/uploads', 'temp_image.jpg')
+            with open(image_path, 'wb') as file:
+                file.write(response.content)
+
+            try:
+                # Perform image recognition using the YOLO model
+                img = cv2.imread(image_path)
+                results = detector.predict(img)
+
+                for result in results:
+                    for box in result.boxes:
+                        label = result.names[int(box.cls[0])]
+                        confidence = box.conf[0]
+                        x_min, y_min, x_max, y_max = box.xyxy[0].cpu().numpy()
+                        predictions.append({
+                            'label': label,
+                            'confidence': float(confidence),
+                            'bbox': [int(x_min), int(y_min), int(x_max), int(y_max)]
+                        })
+
+                        print(predictions)
+                        print(predictions[0]['label'])
+
+            except Exception as e:
+                return jsonify({'error': 'Failed to process image from URL', 'message': str(e)}), 500
+
+        except Exception as e:
+            return jsonify({'error': 'Failed to download and process image', 'message': str(e)}), 400
+    else:
+        return jsonify({'error': 'No image or URL provided'}), 400
+
+    # return only the label without jsonify
+    return predictions[0]['label']
+
+
+@app.route('/search-results')
+def search_results():
+    label = request.args.get('results', '').lower()
+    products = []
+    if label:
+        products = list(product_collection.find({'name': {'$regex': label, '$options': 'i'}}))  # Case-insensitive search
+
+    return render_template('search_result.html', products=products, label=label)
+
+
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     # Get product ID from the request json data
@@ -245,9 +328,11 @@ def empty_cart():
 def admin():
     total_products = product_collection.count_documents({})
     total_orders = transaction_collection.count_documents({})
-    total_amount = sum(transaction['total_amount'] for transaction in transaction_collection.find({'status': 'capture'}))
+    total_amount = sum(
+        transaction['total_amount'] for transaction in transaction_collection.find({'status': 'capture'}))
 
-    return render_template('admin/dashboard.html', total_products=total_products, total_orders=total_orders, total_amount=total_amount, current_page='dashboard')
+    return render_template('admin/dashboard.html', total_products=total_products, total_orders=total_orders,
+                           total_amount=total_amount, current_page='dashboard')
 
 
 # Route for adding a product
@@ -423,9 +508,10 @@ def orders():
     user_map = {str(user['_id']): user['username'] for user in user_collection.find()}
 
     for transaction in transactions:
-        transaction['username'] = user_map.get(str(transaction['user_id']), 'Unknown User')    
-    
+        transaction['username'] = user_map.get(str(transaction['user_id']), 'Unknown User')
+
     return render_template('admin/orders.html', transactions=transactions, current_page='orders')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
