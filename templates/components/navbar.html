@@ -41,12 +41,16 @@
     <div class="bg-white p-6 rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-4">Search by Image</h2>
         <input type="file" id="imageFileInput" class="mb-4">
+        <button id="openCameraBtn" class="bg-blue-600 text-white px-4 py-2 rounded mb-4">Open Camera</button>
         <input type="text" id="imageUrlInput" placeholder="Or Enter image URL..."
                class="w-full mb-4 p-2 border rounded">
         <div class="flex justify-end space-x-4">
             <button id="imageSearchCancel" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
             <button id="imageSearchSubmit" class="bg-pink-600 text-white px-4 py-2 rounded">Search</button>
         </div>
+        <video id="cameraVideo" class="hidden" autoplay></video>
+        <button id="captureImageBtn" class="hidden bg-blue-600 text-white px-4 py-2 rounded mt-4">Capture Image</button>
+        <canvas id="cameraCanvas" class="hidden"></canvas>
     </div>
 </div>
 
@@ -135,6 +139,55 @@
         }
     });
 
+    // Open camera to capture an image
+    document.getElementById('openCameraBtn').addEventListener('click', function () {
+        const video = document.getElementById('cameraVideo');
+        const captureButton = document.getElementById('captureImageBtn');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                captureButton.classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Error accessing the camera:', error);
+            });
+
+        // Capture image when the capture button is clicked
+        captureButton.addEventListener('click', function () {
+            const canvas = document.getElementById('cameraCanvas');
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convert the captured image to a blob and send it to the server
+            canvas.toBlob(function (blob) {
+                const formData = new FormData();
+                formData.append('image', blob);
+
+                fetch('/imageSearch', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        window.location.href = `/search-results?results=${encodeURIComponent(data)}`;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // Stop the video stream
+                const tracks = video.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                video.classList.add('hidden');
+                captureButton.classList.add('hidden');
+                document.getElementById('imageSearchModal').classList.add('hidden');
+            }, 'image/jpeg');
+        });
+    });
 
     function startSpeechRecognition() {
         const recognition = new webkitSpeechRecognition();
